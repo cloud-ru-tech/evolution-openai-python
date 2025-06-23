@@ -1,0 +1,382 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Аутентификация &mdash; Evolution OpenAI 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=95aa0e50" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=af2ce170"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Использование" href="usage.html" />
+    <link rel="prev" title="Установка" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Evolution OpenAI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Руководство пользователя:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Быстрый старт</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Установка</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Аутентификация</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Получение учетных данных</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">Способы аутентификации</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Прямое указание в коде</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Переменные окружения</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#env">Файл .env</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">Управление токенами</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Автоматическое обновление</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Ручное управление</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">Безопасность</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Лучшие практики</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gitignore">Файл .gitignore</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Ротация ключей</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">Отладка аутентификации</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Включение логирования</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id14">Проверка подключения</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">Частые ошибки</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#unauthorized">401 Unauthorized</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#forbidden">403 Forbidden</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Таймауты</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async_usage.html">Асинхронное использование</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Миграция с OpenAI SDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Дополнительно:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README_DOCS.html">Работа с документацией</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Evolution OpenAI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Аутентификация</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/docs/authentication.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Аутентификация<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<p>Evolution OpenAI использует систему аутентификации Cloud.ru для доступа к API моделей искусственного интеллекта.</p>
+<section id="id2">
+<h2>Получение учетных данных<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<p>Для работы с SDK вам понадобятся:</p>
+<ol class="arabic simple">
+<li><p><strong>Key ID</strong> - идентификатор ключа доступа</p></li>
+<li><p><strong>Secret</strong> - секретный ключ</p></li>
+<li><p><strong>Base URL</strong> - URL эндпоинта вашей модели</p></li>
+</ol>
+<p>Эти данные можно получить в личном кабинете Cloud.ru:</p>
+<ol class="arabic simple">
+<li><p>Войдите в личный кабинет Cloud.ru</p></li>
+<li><p>Перейдите в раздел “AI/ML сервисы”</p></li>
+<li><p>Выберите вашу модель</p></li>
+<li><p>В разделе “API доступ” найдите учетные данные</p></li>
+</ol>
+</section>
+<section id="id3">
+<h2>Способы аутентификации<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<section id="id4">
+<h3>Прямое указание в коде<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Не рекомендуется для продакшена! Используйте только для тестирования.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id_here&quot;</span><span class="p">,</span>
+    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret_here&quot;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Переменные окружения<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
+<p><strong>Рекомендуемый способ</strong> для продакшена:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">EVOLUTION_KEY_ID</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EVOLUTION_SECRET</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EVOLUTION_BASE_URL</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
+    <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="env">
+<h3>Файл .env<a class="headerlink" href="#env" title="Permalink to this heading"></a></h3>
+<p>Создайте файл <code class="docutils literal notranslate"><span class="pre">.env</span></code> в корне проекта:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># .env</span>
+<span class="nv">EVOLUTION_KEY_ID</span><span class="o">=</span>your_key_id
+<span class="nv">EVOLUTION_SECRET</span><span class="o">=</span>your_secret
+<span class="nv">EVOLUTION_BASE_URL</span><span class="o">=</span>https://your-endpoint.cloud.ru/v1
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">load_dotenv</span><span class="p">()</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
+    <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id6">
+<h2>Управление токенами<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
+<p>SDK автоматически управляет токенами доступа:</p>
+<section id="id7">
+<h3>Автоматическое обновление<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<ul class="simple">
+<li><p>Токены автоматически обновляются за 30 секунд до истечения</p></li>
+<li><p>При ошибках авторизации токен обновляется принудительно</p></li>
+<li><p>Каждый клиент управляет своими токенами независимо</p></li>
+</ul>
+</section>
+<section id="id8">
+<h3>Ручное управление<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Получить информацию о текущем токене</span>
+<span class="n">token_info</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_token_info</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">token_info</span><span class="p">)</span>
+<span class="c1"># {</span>
+<span class="c1">#     &quot;has_token&quot;: true,</span>
+<span class="c1">#     &quot;expires_at&quot;: &quot;2024-01-01T12:00:00Z&quot;,</span>
+<span class="c1">#     &quot;is_valid&quot;: true,</span>
+<span class="c1">#     &quot;buffer_seconds&quot;: 30</span>
+<span class="c1"># }</span>
+
+<span class="c1"># Принудительно обновить токен</span>
+<span class="n">new_token</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">()</span>
+
+<span class="c1"># Получить текущий токен</span>
+<span class="n">current_token</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">current_token</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h2>Безопасность<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h2>
+<section id="id10">
+<h3>Лучшие практики<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Никогда не храните учетные данные в коде или публичных репозиториях!</p>
+</div>
+<ol class="arabic simple">
+<li><p><strong>Используйте переменные окружения</strong> или файлы конфигурации</p></li>
+<li><p><strong>Добавьте .env в .gitignore</strong></p></li>
+<li><p><strong>Используйте разные учетные данные</strong> для разработки и продакшена</p></li>
+<li><p><strong>Регулярно обновляйте ключи</strong> доступа</p></li>
+<li><p><strong>Ограничивайте области доступа</strong> ключей</p></li>
+</ol>
+</section>
+<section id="gitignore">
+<h3>Файл .gitignore<a class="headerlink" href="#gitignore" title="Permalink to this heading"></a></h3>
+<p>Убедитесь, что ваш <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> содержит:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Environment variables</span>
+.env
+.env.*
+!.env.example
+
+<span class="c1"># Credentials</span>
+*.token
+credentials.json
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>Ротация ключей<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<p>При компрометации ключей:</p>
+<ol class="arabic simple">
+<li><p>Сгенерируйте новые ключи в личном кабинете Cloud.ru</p></li>
+<li><p>Обновите переменные окружения</p></li>
+<li><p>Перезапустите приложение</p></li>
+<li><p>Удалите старые ключи из системы</p></li>
+</ol>
+</section>
+</section>
+<section id="id12">
+<h2>Отладка аутентификации<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h2>
+<section id="id13">
+<h3>Включение логирования<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="c1"># Включить отладочные логи</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id14">
+<h3>Проверка подключения<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="c1"># Простой тестовый запрос</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Тест подключения&quot;</span><span class="p">}],</span>
+        <span class="n">max_tokens</span><span class="o">=</span><span class="mi">10</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Аутентификация успешна&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Ошибка аутентификации: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h2>Частые ошибки<a class="headerlink" href="#id15" title="Permalink to this heading"></a></h2>
+<section id="unauthorized">
+<h3>401 Unauthorized<a class="headerlink" href="#unauthorized" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">401</span><span class="w"> </span>Client<span class="w"> </span>Error:<span class="w"> </span>Unauthorized
+</pre></div>
+</div>
+<p><strong>Причины:</strong>
+- Неверный Key ID или Secret
+- Истекший токен (автоматически исправляется SDK)
+- Доступ к эндпоинту запрещен</p>
+<p><strong>Решение:</strong>
+- Проверьте правильность учетных данных
+- Убедитесь в доступности эндпоинта
+- Проверьте права доступа ключа</p>
+</section>
+<section id="forbidden">
+<h3>403 Forbidden<a class="headerlink" href="#forbidden" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="m">403</span><span class="w"> </span>Client<span class="w"> </span>Error:<span class="w"> </span>Forbidden
+</pre></div>
+</div>
+<p><strong>Причины:</strong>
+- Недостаточно прав у ключа доступа
+- Эндпоинт недоступен для вашего аккаунта</p>
+<p><strong>Решение:</strong>
+- Проверьте права доступа в личном кабинете
+- Обратитесь в поддержку Cloud.ru</p>
+</section>
+<section id="id16">
+<h3>Таймауты<a class="headerlink" href="#id16" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>TimeoutError:<span class="w"> </span>Request<span class="w"> </span>timed<span class="w"> </span>out
+</pre></div>
+</div>
+<p><strong>Решение:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mf">60.0</span>  <span class="c1"># Увеличить таймаут</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Установка" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usage.html" class="btn btn-neutral float-right" title="Использование" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Evolution OpenAI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

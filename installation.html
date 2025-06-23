@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Установка &mdash; Evolution OpenAI 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=95aa0e50" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=af2ce170"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Аутентификация" href="authentication.html" />
+    <link rel="prev" title="Быстрый старт" href="quickstart.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Evolution OpenAI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Руководство пользователя:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Быстрый старт</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Установка</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Требования к системе</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pip">Установка через pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#poetry">Установка через Poetry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">Установка из исходного кода</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">Установка для разработки</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">Проверка установки</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">Обновление</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">Удаление</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">Возможные проблемы</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#python">Конфликт версий Python</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Проблемы с зависимостями</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Проблемы с установкой в виртуальном окружении</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Аутентификация</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async_usage.html">Асинхронное использование</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Миграция с OpenAI SDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Дополнительно:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README_DOCS.html">Работа с документацией</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Evolution OpenAI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Установка</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/docs/installation.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Установка<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<p>Evolution OpenAI можно установить несколькими способами.</p>
+<section id="id2">
+<h2>Требования к системе<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<ul class="simple">
+<li><p>Python 3.8.1 или выше</p></li>
+<li><p>pip или Poetry для управления пакетами</p></li>
+</ul>
+</section>
+<section id="pip">
+<h2>Установка через pip<a class="headerlink" href="#pip" title="Permalink to this heading"></a></h2>
+<p>Самый простой способ установки:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+<section id="poetry">
+<h2>Установка через Poetry<a class="headerlink" href="#poetry" title="Permalink to this heading"></a></h2>
+<p>Если вы используете Poetry для управления зависимостями:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h2>Установка из исходного кода<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<p>Для разработчиков или для получения последней версии:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cloud-ru-tech/evolution-openai-python.git
+<span class="nb">cd</span><span class="w"> </span>evolution-openai
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h2>Установка для разработки<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
+<p>Если вы планируете вносить изменения в код:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cloud-ru-tech/evolution-openai-python.git
+<span class="nb">cd</span><span class="w"> </span>evolution-openai
+
+<span class="c1"># С Poetry</span>
+poetry<span class="w"> </span>install<span class="w"> </span>--with<span class="o">=</span>dev,docs
+
+<span class="c1"># Или с pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev,test,docs]&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h2>Проверка установки<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h2>
+<p>Проверьте, что установка прошла успешно:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">evolution_openai</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">evolution_openai</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Или через командную строку:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import evolution_openai; print(evolution_openai.__version__)&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h2>Обновление<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h2>
+<p>Для обновления до последней версии:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># С pip</span>
+pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>evolution-openai
+
+<span class="c1"># С Poetry</span>
+poetry<span class="w"> </span>update<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h2>Удаление<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h2>
+<p>Если нужно удалить пакет:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># С pip</span>
+pip<span class="w"> </span>uninstall<span class="w"> </span>evolution-openai
+
+<span class="c1"># С Poetry (удалить из проекта)</span>
+poetry<span class="w"> </span>remove<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+<section id="id8">
+<h2>Возможные проблемы<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h2>
+<section id="python">
+<h3>Конфликт версий Python<a class="headerlink" href="#python" title="Permalink to this heading"></a></h3>
+<p>Если вы получаете ошибку о несовместимости версий Python:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ERROR:<span class="w"> </span>evolution-openai<span class="w"> </span>requires<span class="w"> </span>Python<span class="w"> </span><span class="s1">&#39;&gt;=3.8.1&#39;</span><span class="w"> </span>but<span class="w"> </span>the<span class="w"> </span>running<span class="w"> </span>Python<span class="w"> </span>is<span class="w"> </span><span class="m">3</span>.8.0
+</pre></div>
+</div>
+<p>Обновите Python до версии 3.8.1 или выше.</p>
+</section>
+<section id="id9">
+<h3>Проблемы с зависимостями<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<p>При конфликтах зависимостей попробуйте:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Очистить кеш pip</span>
+pip<span class="w"> </span>cache<span class="w"> </span>purge
+
+<span class="c1"># Переустановить пакет</span>
+pip<span class="w"> </span>uninstall<span class="w"> </span>evolution-openai
+pip<span class="w"> </span>install<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3>Проблемы с установкой в виртуальном окружении<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<p>Убедитесь, что виртуальное окружение активировано:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Создание виртуального окружения</span>
+python<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>venv
+
+<span class="c1"># Активация (Linux/Mac)</span>
+<span class="nb">source</span><span class="w"> </span>venv/bin/activate
+
+<span class="c1"># Активация (Windows)</span>
+venv<span class="se">\S</span>cripts<span class="se">\a</span>ctivate
+
+<span class="c1"># Установка</span>
+pip<span class="w"> </span>install<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quickstart.html" class="btn btn-neutral float-left" title="Быстрый старт" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="authentication.html" class="btn btn-neutral float-right" title="Аутентификация" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Evolution OpenAI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

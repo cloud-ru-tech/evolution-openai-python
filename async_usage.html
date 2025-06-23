@@ -1,0 +1,611 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Асинхронное использование &mdash; Evolution OpenAI 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=95aa0e50" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=af2ce170"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Streaming API" href="streaming.html" />
+    <link rel="prev" title="Использование" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Evolution OpenAI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Руководство пользователя:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Быстрый старт</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Установка</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Аутентификация</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Асинхронное использование</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Основы асинхронной работы</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Инициализация асинхронного клиента</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Базовый асинхронный запрос</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#context-manager">Context Manager</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">Параллельные запросы</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Одновременная обработка нескольких запросов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Обработка с семафором</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#streaming">Асинхронный Streaming</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#async-await">Потоковая передача с async/await</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">Обработка ошибок в асинхронном коде</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#try-except-async">Try-except с async</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#graceful-shutdown">Graceful shutdown</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id9">Продвинутые паттерны</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Пул асинхронных клиентов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Асинхронная очередь задач</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">Интеграция с веб-фреймворками</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fastapi">FastAPI пример</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#aiohttp">aiohttp пример</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">Лучшие практики</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migration.html">Миграция с OpenAI SDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Дополнительно:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README_DOCS.html">Работа с документацией</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Evolution OpenAI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Асинхронное использование</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/docs/async_usage.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="id1">
+<h1>Асинхронное использование<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h1>
+<p>Evolution OpenAI полностью поддерживает асинхронные операции с использованием async/await.</p>
+<section id="id2">
+<h2>Основы асинхронной работы<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<section id="id3">
+<h3>Инициализация асинхронного клиента<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Ваш код здесь</span>
+
+    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>  <span class="c1"># Важно закрывать клиент</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h3>Базовый асинхронный запрос<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">simple_request</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Ты полезный помощник.&quot;</span><span class="p">},</span>
+            <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Что такое асинхронное программирование?&quot;</span><span class="p">}</span>
+        <span class="p">],</span>
+        <span class="n">max_tokens</span><span class="o">=</span><span class="mi">200</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="context-manager">
+<h2>Context Manager<a class="headerlink" href="#context-manager" title="Permalink to this heading"></a></h2>
+<p>Рекомендуемый способ использования async клиента:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">with_context_manager</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Привет!&quot;</span><span class="p">}],</span>
+            <span class="n">max_tokens</span><span class="o">=</span><span class="mi">50</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+    <span class="c1"># Клиент автоматически закрывается</span>
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h2>Параллельные запросы<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h2>
+<section id="id6">
+<h3>Одновременная обработка нескольких запросов<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">parallel_requests</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+        <span class="c1"># Создаем задачи для параллельного выполнения</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Вопрос </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}],</span>
+                <span class="n">max_tokens</span><span class="o">=</span><span class="mi">50</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Выполняем все запросы параллельно</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">response</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">responses</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ответ </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>Обработка с семафором<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<p>Ограничение количества одновременных запросов:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">limited_parallel_requests</span><span class="p">():</span>
+    <span class="c1"># Ограничиваем до 3 одновременных запросов</span>
+    <span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">single_request</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">semaphore</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Запрос </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> начался&quot;</span><span class="p">)</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="p">}],</span>
+                <span class="n">max_tokens</span><span class="o">=</span><span class="mi">50</span>
+            <span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Запрос </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> завершен&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+        <span class="n">prompts</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Расскажи про тему </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">single_request</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">prompt</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prompts</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">result</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Результат </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="streaming">
+<h2>Асинхронный Streaming<a class="headerlink" href="#streaming" title="Permalink to this heading"></a></h2>
+<section id="async-await">
+<h3>Потоковая передача с async/await<a class="headerlink" href="#async-await" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_streaming</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+        <span class="n">stream</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span>
+                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Расскажи длинную историю&quot;</span>
+            <span class="p">}],</span>
+            <span class="n">stream</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">max_tokens</span><span class="o">=</span><span class="mi">300</span>
+        <span class="p">)</span>
+
+        <span class="k">async</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">chunk</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">()</span>  <span class="c1"># Новая строка в конце</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>Обработка ошибок в асинхронном коде<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h2>
+<section id="try-except-async">
+<h3>Try-except с async<a class="headerlink" href="#try-except-async" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">error_handling_example</span><span class="p">():</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+            <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+            <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+            <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+        <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Тест&quot;</span><span class="p">}],</span>
+                <span class="n">max_tokens</span><span class="o">=</span><span class="mi">50</span>
+            <span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Превышено время ожидания&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ошибка: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="graceful-shutdown">
+<h3>Graceful shutdown<a class="headerlink" href="#graceful-shutdown" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">signal</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">AsyncChatBot</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+            <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+            <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+            <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Обработчик сигналов</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_handler</span><span class="p">)</span>
+        <span class="n">signal</span><span class="o">.</span><span class="n">signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signal_handler</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+                <span class="c1"># Основной цикл работы</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_requests</span><span class="p">()</span>
+                <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">signal_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signum</span><span class="p">,</span> <span class="n">frame</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Получен сигнал </span><span class="si">{</span><span class="n">signum</span><span class="si">}</span><span class="s2">, останавливаюсь...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">process_requests</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Логика обработки запросов</span>
+        <span class="k">pass</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Клиент закрыт&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id9">
+<h2>Продвинутые паттерны<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h2>
+<section id="id10">
+<h3>Пул асинхронных клиентов<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AsyncClientPool</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pool_size</span> <span class="o">=</span> <span class="n">pool_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clients</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">semaphore</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Semaphore</span><span class="p">(</span><span class="n">pool_size</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pool_size</span><span class="p">):</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+                <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+                <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+                <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__aexit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">client</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">async</span> <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">semaphore</span><span class="p">:</span>
+            <span class="c1"># Простое round-robin</span>
+            <span class="n">client</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clients</span><span class="p">)</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pool_size</span><span class="p">]</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">messages</span><span class="o">=</span><span class="n">messages</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+            <span class="p">)</span>
+
+<span class="c1"># Использование</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">use_pool</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncClientPool</span><span class="p">(</span><span class="n">pool_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">pool</span><span class="o">.</span><span class="n">request</span><span class="p">([{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Запрос </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}])</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="n">responses</span> <span class="o">=</span> <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">tasks</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>Асинхронная очередь задач<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">worker</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">worker_id</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Воркер для обработки задач из очереди&quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Получаем задачу из очереди</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">task</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># Сигнал завершения</span>
+                <span class="k">break</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Воркер </span><span class="si">{</span><span class="n">worker_id</span><span class="si">}</span><span class="s2"> обрабатывает: </span><span class="si">{</span><span class="n">task</span><span class="p">[</span><span class="s1">&#39;prompt&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+            <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">task</span><span class="p">[</span><span class="s1">&#39;prompt&#39;</span><span class="p">]}],</span>
+                <span class="n">max_tokens</span><span class="o">=</span><span class="mi">100</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Сохраняем результат</span>
+            <span class="n">task</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+            <span class="n">task</span><span class="p">[</span><span class="s1">&#39;done&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">()</span>  <span class="c1"># Сигнализируем о завершении</span>
+
+            <span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ошибка в воркере </span><span class="si">{</span><span class="n">worker_id</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">task_done</span><span class="p">()</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">queue_example</span><span class="p">():</span>
+    <span class="c1"># Создаем очередь и клиент</span>
+    <span class="n">queue</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Queue</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+        <span class="c1"># Запускаем воркеров</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">asyncio</span><span class="o">.</span><span class="n">create_task</span><span class="p">(</span><span class="n">worker</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span> <span class="n">client</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="c1"># Добавляем задачи</span>
+        <span class="n">tasks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;prompt&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;Вопрос номер </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="s1">&#39;done&#39;</span><span class="p">:</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Event</span><span class="p">(),</span>
+                <span class="s1">&#39;result&#39;</span><span class="p">:</span> <span class="kc">None</span>
+            <span class="p">}</span>
+            <span class="n">tasks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+            <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">task</span><span class="p">)</span>
+
+        <span class="c1"># Ждем завершения всех задач</span>
+        <span class="k">for</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tasks</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">task</span><span class="p">[</span><span class="s1">&#39;done&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Результат: </span><span class="si">{</span><span class="n">task</span><span class="p">[</span><span class="s1">&#39;result&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Останавливаем воркеров</span>
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">workers</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">gather</span><span class="p">(</span><span class="o">*</span><span class="n">workers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>Интеграция с веб-фреймворками<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h2>
+<section id="fastapi">
+<h3>FastAPI пример<a class="headerlink" href="#fastapi" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ChatRequest</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">message</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">max_tokens</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ChatResponse</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">response</span><span class="p">:</span> <span class="nb">str</span>
+
+<span class="c1"># Глобальный клиент (инициализируется при старте)</span>
+<span class="n">client</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;startup&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">startup_event</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">client</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">on_event</span><span class="p">(</span><span class="s2">&quot;shutdown&quot;</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">shutdown_event</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">client</span>
+    <span class="k">if</span> <span class="n">client</span><span class="p">:</span>
+        <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/chat&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">ChatResponse</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">chat_endpoint</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">ChatRequest</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">message</span><span class="p">}],</span>
+        <span class="n">max_tokens</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">max_tokens</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">ChatResponse</span><span class="p">(</span>
+        <span class="n">response</span><span class="o">=</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="aiohttp">
+<h3>aiohttp пример<a class="headerlink" href="#aiohttp" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aiohttp</span><span class="w"> </span><span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">chat_handler</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">client</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">app</span><span class="p">[</span><span class="s1">&#39;openai_client&#39;</span><span class="p">]</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">}],</span>
+        <span class="n">max_tokens</span><span class="o">=</span><span class="mi">100</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">web</span><span class="o">.</span><span class="n">json_response</span><span class="p">({</span>
+        <span class="s1">&#39;response&#39;</span><span class="p">:</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+    <span class="p">})</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">init_app</span><span class="p">():</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">()</span>
+
+    <span class="c1"># Инициализация клиента</span>
+    <span class="n">app</span><span class="p">[</span><span class="s1">&#39;openai_client&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_post</span><span class="p">(</span><span class="s1">&#39;/chat&#39;</span><span class="p">,</span> <span class="n">chat_handler</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">app</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="k">await</span> <span class="n">app</span><span class="p">[</span><span class="s1">&#39;openai_client&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">init_app</span><span class="p">()</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">on_cleanup</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cleanup</span><span class="p">)</span>
+    <span class="n">web</span><span class="o">.</span><span class="n">run_app</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">8080</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id13">
+<h2>Лучшие практики<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Всегда используйте context manager</strong> или вручную закрывайте клиенты</p></li>
+<li><p><strong>Ограничивайте concurrency</strong> семафорами во избежание перегрузки</p></li>
+<li><p><strong>Обрабатывайте исключения</strong> специфичные для async кода</p></li>
+<li><p><strong>Используйте пулы клиентов</strong> для высоконагруженных приложений</p></li>
+<li><p><strong>Реализуйте graceful shutdown</strong> в долгоработающих сервисах</p></li>
+<li><p><strong>Мониторьте производительность</strong> и bottlenecks в async коде</p></li>
+</ol>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Использование" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="streaming.html" class="btn btn-neutral float-right" title="Streaming API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Evolution OpenAI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

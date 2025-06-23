@@ -1,0 +1,828 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Миграция с OpenAI SDK &mdash; Evolution OpenAI 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/custom.css?v=95aa0e50" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=af2ce170"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Работа с документацией" href="README_DOCS.html" />
+    <link rel="prev" title="Обработка ошибок" href="error_handling.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #2980B9" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Evolution OpenAI
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Руководство пользователя:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Быстрый старт</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Установка</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Аутентификация</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
+<li class="toctree-l1"><a class="reference internal" href="async_usage.html">Асинхронное использование</a></li>
+<li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Миграция с OpenAI SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#id1">Почему миграция проста</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Основные изменения</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">Пошаговая миграция</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Шаг 1: Установка</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Шаг 2: Изменение импортов</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Шаг 3: Обновление аутентификации</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Шаг 4: Переменные окружения</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id8">Примеры миграции</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Базовый чат</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Асинхронный код</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#streaming">Streaming</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Обработка ошибок</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">Автоматическая миграция</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id13">Скрипт миграции</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id14">Конфигурационные файлы</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#docker-compose">Docker Compose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kubernetes">Kubernetes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id15">Тестирование миграции</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id16">Проверочный скрипт</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id17">Частые проблемы и решения</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-not-found">Проблема: “Module not found”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#invalid-credentials">Проблема: “Invalid credentials”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-not-found">Проблема: “Model not found”</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id18">Проблема: Старые исключения</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rollback">Rollback план</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id19">Чек-лист миграции</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id20">Заключение</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Дополнительно:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README_DOCS.html">Работа с документацией</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: #2980B9" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Evolution OpenAI</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Миграция с OpenAI SDK</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/docs/migration.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="openai-sdk">
+<h1>Миграция с OpenAI SDK<a class="headerlink" href="#openai-sdk" title="Permalink to this heading"></a></h1>
+<p>Этот раздел поможет вам мигрировать с официального OpenAI Python SDK на Evolution OpenAI.</p>
+<section id="id1">
+<h2>Почему миграция проста<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
+<p>Evolution OpenAI <strong>полностью совместим</strong> с официальным OpenAI SDK:</p>
+<p>✅ <strong>Идентичный API</strong> - все методы и параметры работают одинаково
+✅ <strong>Те же типы данных</strong> - структуры ответов не изменились
+✅ <strong>Совместимые исключения</strong> - обработка ошибок аналогична
+✅ <strong>Async/await поддержка</strong> - все асинхронные возможности сохранены
+✅ <strong>Streaming API</strong> - потоковая передача работает идентично</p>
+</section>
+<section id="id2">
+<h2>Основные изменения<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h2>
+<p>Единственное отличие - <strong>способ аутентификации</strong>:</p>
+<table class="docutils align-default" id="id21">
+<caption><span class="caption-text">Сравнение аутентификации</span><a class="headerlink" href="#id21" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>OpenAI SDK</p></th>
+<th class="head"><p>Evolution OpenAI</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">api_key=&quot;sk-...&quot;</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">key_id=&quot;your_key_id&quot;,</span> <span class="pre">secret=&quot;your_secret&quot;</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">base_url</span></code> (опционально)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">base_url</span></code> (обязательно)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">organization</span></code> (опционально)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">organization</span></code> (совместимость)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id3">
+<h2>Пошаговая миграция<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h2>
+<section id="id4">
+<h3>Шаг 1: Установка<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Удалите старый SDK (опционально)</span>
+pip<span class="w"> </span>uninstall<span class="w"> </span>openai
+
+<span class="c1"># Установите Evolution SDK</span>
+pip<span class="w"> </span>install<span class="w"> </span>evolution-openai
+</pre></div>
+</div>
+</section>
+<section id="id5">
+<h3>Шаг 2: Изменение импортов<a class="headerlink" href="#id5" title="Permalink to this heading"></a></h3>
+<p><strong>До:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span><span class="p">,</span> <span class="n">AsyncOpenAI</span>
+</pre></div>
+</div>
+<p><strong>После:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span><span class="p">,</span> <span class="n">AsyncOpenAI</span>
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3>Шаг 3: Обновление аутентификации<a class="headerlink" href="#id6" title="Permalink to this heading"></a></h3>
+<p><strong>До:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;sk-your-openai-key&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>После:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_EVOLUTION_key_id&quot;</span><span class="p">,</span>
+    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_EVOLUTION_secret&quot;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id7">
+<h3>Шаг 4: Переменные окружения<a class="headerlink" href="#id7" title="Permalink to this heading"></a></h3>
+<p><strong>До:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-your-key&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_BASE_URL</span><span class="o">=</span><span class="s2">&quot;https://api.openai.com/v1&quot;</span><span class="w">  </span><span class="c1"># опционально</span>
+</pre></div>
+</div>
+<p><strong>После:</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">EVOLUTION_KEY_ID</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EVOLUTION_SECRET</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">EVOLUTION_BASE_URL</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id8">
+<h2>Примеры миграции<a class="headerlink" href="#id8" title="Permalink to this heading"></a></h2>
+<section id="id9">
+<h3>Базовый чат<a class="headerlink" href="#id9" title="Permalink to this heading"></a></h3>
+<p><strong>До (OpenAI):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">api_key</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;You are a helpful assistant.&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>После (Evolution):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
+    <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>  <span class="c1"># Или название вашей модели</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;system&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;You are a helpful assistant.&quot;</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello!&quot;</span><span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">max_tokens</span><span class="o">=</span><span class="mi">100</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id10">
+<h3>Асинхронный код<a class="headerlink" href="#id10" title="Permalink to this heading"></a></h3>
+<p><strong>До (OpenAI):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;sk-your-key&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello async!&quot;</span><span class="p">}]</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+<p><strong>После (Evolution):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+        <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+        <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+        <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+    <span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello async!&quot;</span><span class="p">}]</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+<span class="n">asyncio</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="streaming">
+<h3>Streaming<a class="headerlink" href="#streaming" title="Permalink to this heading"></a></h3>
+<p><strong>До (OpenAI):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;sk-your-key&quot;</span><span class="p">)</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-3.5-turbo&quot;</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me a story&quot;</span><span class="p">}],</span>
+    <span class="n">stream</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">chunk</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>После (Evolution):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+    <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
+    <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
+    <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+<span class="p">)</span>
+
+<span class="n">stream</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Tell me a story&quot;</span><span class="p">}],</span>
+    <span class="n">stream</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">stream</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">chunk</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">content</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">chunk</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">delta</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id11">
+<h3>Обработка ошибок<a class="headerlink" href="#id11" title="Permalink to this heading"></a></h3>
+<p><strong>До (OpenAI):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai.error</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAIError</span><span class="p">,</span> <span class="n">RateLimitError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">RateLimitError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rate limit exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">OpenAIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;OpenAI error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>После (Evolution):</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAIError</span><span class="p">,</span> <span class="n">RateLimitError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">RateLimitError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rate limit exceeded: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">EvolutionOpenAIError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Evolution error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id12">
+<h2>Автоматическая миграция<a class="headerlink" href="#id12" title="Permalink to this heading"></a></h2>
+<section id="id13">
+<h3>Скрипт миграции<a class="headerlink" href="#id13" title="Permalink to this heading"></a></h3>
+<p>Создайте файл <code class="docutils literal notranslate"><span class="pre">migrate.py</span></code> для автоматической замены:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Скрипт для автоматической миграции с OpenAI SDK на Evolution OpenAI</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">migrate_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Мигрирует один Python файл&quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">original_content</span> <span class="o">=</span> <span class="n">content</span>
+
+    <span class="c1"># Замена импортов</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;from openai import&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;from evolution_openai import&#39;</span><span class="p">,</span>
+        <span class="n">content</span>
+    <span class="p">)</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;import openai&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;import evolution_openai as openai&#39;</span><span class="p">,</span>
+        <span class="n">content</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Замена создания клиента</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;OpenAI\(\s*api_key\s*=\s*[&quot;</span><span class="se">\&#39;</span><span class="s1">]([^&quot;</span><span class="se">\&#39;</span><span class="s1">]+)[&quot;</span><span class="se">\&#39;</span><span class="s1">]\s*\)&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;OpenAI(\n    key_id=&quot;your_key_id&quot;,\n    secret=&quot;your_secret&quot;,\n    base_url=&quot;https://your-endpoint.cloud.ru/v1&quot;\n)&#39;</span><span class="p">,</span>
+        <span class="n">content</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Замена переменных окружения</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;os\.getenv\([&quot;</span><span class="se">\&#39;</span><span class="s1">]OPENAI_API_KEY[&quot;</span><span class="se">\&#39;</span><span class="s1">]\)&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;os.getenv(&quot;EVOLUTION_KEY_ID&quot;)&#39;</span><span class="p">,</span>
+        <span class="n">content</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Замена исключений</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;from openai\.error import&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;from evolution_openai.exceptions import&#39;</span><span class="p">,</span>
+        <span class="n">content</span>
+    <span class="p">)</span>
+
+    <span class="n">content</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="sa">r</span><span class="s1">&#39;OpenAIError&#39;</span><span class="p">,</span>
+        <span class="sa">r</span><span class="s1">&#39;EvolutionOpenAIError&#39;</span><span class="p">,</span>
+        <span class="n">content</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">content</span> <span class="o">!=</span> <span class="n">original_content</span><span class="p">:</span>
+        <span class="c1"># Создаем резервную копию</span>
+        <span class="n">backup_path</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">.backup&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">backup_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">original_content</span><span class="p">)</span>
+
+        <span class="c1"># Записываем измененный файл</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Мигрирован: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2"> (резервная копия: </span><span class="si">{</span><span class="n">backup_path</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;⏭️ Без изменений: </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">migrate_directory</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Мигрирует все Python файлы в директории&quot;&quot;&quot;</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span>
+    <span class="n">migrated_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">py_file</span> <span class="ow">in</span> <span class="n">directory</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">migrate_file</span><span class="p">(</span><span class="n">py_file</span><span class="p">):</span>
+            <span class="n">migrated_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📊 Мигрировано файлов: </span><span class="si">{</span><span class="n">migrated_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_env_template</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Создает шаблон .env файла&quot;&quot;&quot;</span>
+    <span class="n">env_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;# Evolution OpenAI Configuration</span>
+<span class="s2">EVOLUTION_KEY_ID=your_key_id_here</span>
+<span class="s2">EVOLUTION_SECRET=your_secret_here</span>
+<span class="s2">EVOLUTION_BASE_URL=https://your-endpoint.cloud.ru/v1</span>
+
+<span class="s2"># Legacy OpenAI (удалите после миграции)</span>
+<span class="s2"># OPENAI_API_KEY=sk-...</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;.env.Evolution&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">env_content</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;📄 Создан шаблон .env.Evolution&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+        <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Миграция с OpenAI SDK на Evolution OpenAI&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;path&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Путь к файлу или директории для миграции&quot;</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s1">&#39;--env&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s1">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Создать шаблон .env файла&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">env</span><span class="p">:</span>
+        <span class="n">create_env_template</span><span class="p">()</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">path</span><span class="o">.</span><span class="n">suffix</span> <span class="o">==</span> <span class="s1">&#39;.py&#39;</span><span class="p">:</span>
+        <span class="n">migrate_file</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">path</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="n">migrate_directory</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Некорректный путь: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Использование скрипта:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Мигрировать один файл</span>
+python<span class="w"> </span>migrate.py<span class="w"> </span>my_app.py
+
+<span class="c1"># Мигрировать всю директорию</span>
+python<span class="w"> </span>migrate.py<span class="w"> </span>./src
+
+<span class="c1"># Создать шаблон .env</span>
+python<span class="w"> </span>migrate.py<span class="w"> </span>--env<span class="w"> </span>.
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id14">
+<h2>Конфигурационные файлы<a class="headerlink" href="#id14" title="Permalink to this heading"></a></h2>
+<section id="docker-compose">
+<h3>Docker Compose<a class="headerlink" href="#docker-compose" title="Permalink to this heading"></a></h3>
+<p><strong>До:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OPENAI_API_KEY=sk-your-key</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">OPENAI_BASE_URL=https://api.openai.com/v1</span>
+</pre></div>
+</div>
+<p><strong>После:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;3.8&#39;</span>
+<span class="nt">services</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">app</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">build</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">.</span>
+<span class="w">    </span><span class="nt">environment</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EVOLUTION_KEY_ID=your_key_id</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EVOLUTION_SECRET=your_secret</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EVOLUTION_BASE_URL=https://your-endpoint.cloud.ru/v1</span>
+</pre></div>
+</div>
+</section>
+<section id="kubernetes">
+<h3>Kubernetes<a class="headerlink" href="#kubernetes" title="Permalink to this heading"></a></h3>
+<p><strong>До:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">openai-config</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">OPENAI_API_KEY</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;sk-your-key&quot;</span>
+</pre></div>
+</div>
+<p><strong>После:</strong></p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
+<span class="nt">metadata</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Evolution-config</span>
+<span class="nt">data</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">EVOLUTION_KEY_ID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_key_id&quot;</span>
+<span class="w">  </span><span class="nt">EVOLUTION_SECRET</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your_secret&quot;</span>
+<span class="w">  </span><span class="nt">EVOLUTION_BASE_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id15">
+<h2>Тестирование миграции<a class="headerlink" href="#id15" title="Permalink to this heading"></a></h2>
+<section id="id16">
+<h3>Проверочный скрипт<a class="headerlink" href="#id16" title="Permalink to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Тестирование миграции Evolution OpenAI</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_connection</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Тестирует подключение к Evolution API&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+            <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
+            <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
+            <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>
+            <span class="n">messages</span><span class="o">=</span><span class="p">[{</span><span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span> <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="s2">&quot;Test connection&quot;</span><span class="p">}],</span>
+            <span class="n">max_tokens</span><span class="o">=</span><span class="mi">10</span>
+        <span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Подключение успешно!&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Ответ: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Ошибка подключения: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_models</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Тестирует получение списка моделей&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+            <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
+            <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
+            <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">models</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">list</span><span class="p">()</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✅ Доступные модели: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Ошибка получения моделей: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;🧪 Тестирование Evolution OpenAI&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+    <span class="c1"># Проверка переменных окружения</span>
+    <span class="n">required_vars</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">,</span> <span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">,</span> <span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">]</span>
+    <span class="n">missing_vars</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">required_vars</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="n">var</span><span class="p">)]</span>
+
+    <span class="k">if</span> <span class="n">missing_vars</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;❌ Отсутствуют переменные: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">missing_vars</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;✅ Переменные окружения настроены&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Тестирование</span>
+    <span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">success</span> <span class="o">&amp;=</span> <span class="n">test_connection</span><span class="p">()</span>
+    <span class="n">success</span> <span class="o">&amp;=</span> <span class="n">test_models</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">success</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🎉 Миграция завершена успешно!&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">❌ Обнаружены проблемы в миграции&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">success</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span> <span class="k">if</span> <span class="n">main</span><span class="p">()</span> <span class="k">else</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="id17">
+<h2>Частые проблемы и решения<a class="headerlink" href="#id17" title="Permalink to this heading"></a></h2>
+<section id="module-not-found">
+<h3>Проблема: “Module not found”<a class="headerlink" href="#module-not-found" title="Permalink to this heading"></a></h3>
+<p><strong>Ошибка:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">ModuleNotFoundError</span><span class="p">:</span> <span class="n">No</span> <span class="n">module</span> <span class="n">named</span> <span class="s1">&#39;openai&#39;</span>
+</pre></div>
+</div>
+<p><strong>Решение:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Замените все импорты</span>
+<span class="c1"># from openai import OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+</pre></div>
+</div>
+</section>
+<section id="invalid-credentials">
+<h3>Проблема: “Invalid credentials”<a class="headerlink" href="#invalid-credentials" title="Permalink to this heading"></a></h3>
+<p><strong>Ошибка:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AuthenticationError</span><span class="p">:</span> <span class="n">Invalid</span> <span class="n">credentials</span>
+</pre></div>
+</div>
+<p><strong>Решение:</strong></p>
+<ol class="arabic simple">
+<li><p>Проверьте правильность <code class="docutils literal notranslate"><span class="pre">key_id</span></code> и <code class="docutils literal notranslate"><span class="pre">secret</span></code></p></li>
+<li><p>Убедитесь, что <code class="docutils literal notranslate"><span class="pre">base_url</span></code> корректен</p></li>
+<li><p>Проверьте права доступа ключа</p></li>
+</ol>
+</section>
+<section id="model-not-found">
+<h3>Проблема: “Model not found”<a class="headerlink" href="#model-not-found" title="Permalink to this heading"></a></h3>
+<p><strong>Ошибка:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NotFoundError</span><span class="p">:</span> <span class="n">Model</span> <span class="s1">&#39;gpt-3.5-turbo&#39;</span> <span class="ow">not</span> <span class="n">found</span>
+</pre></div>
+</div>
+<p><strong>Решение:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Замените название модели на доступное</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">=</span><span class="s2">&quot;default&quot;</span><span class="p">,</span>  <span class="c1"># Или другое доступное название</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="id18">
+<h3>Проблема: Старые исключения<a class="headerlink" href="#id18" title="Permalink to this heading"></a></h3>
+<p><strong>Ошибка:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">NameError</span><span class="p">:</span> <span class="n">name</span> <span class="s1">&#39;OpenAIError&#39;</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">defined</span>
+</pre></div>
+</div>
+<p><strong>Решение:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Замените импорты исключений</span>
+<span class="c1"># from openai.error import OpenAIError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAIError</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="rollback">
+<h2>Rollback план<a class="headerlink" href="#rollback" title="Permalink to this heading"></a></h2>
+<p>Если миграция вызвала проблемы, можно быстро откатиться:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># 1. Восстановите из резервных копий</span>
+find<span class="w"> </span>.<span class="w"> </span>-name<span class="w"> </span><span class="s2">&quot;*.py.backup&quot;</span><span class="w"> </span>-exec<span class="w"> </span>bash<span class="w"> </span>-c<span class="w"> </span><span class="s1">&#39;mv &quot;$1&quot; &quot;${1%.backup}&quot;&#39;</span><span class="w"> </span>_<span class="w"> </span><span class="o">{}</span><span class="w"> </span><span class="se">\;</span>
+
+<span class="c1"># 2. Переустановите оригинальный SDK</span>
+pip<span class="w"> </span>uninstall<span class="w"> </span>evolution-openai
+pip<span class="w"> </span>install<span class="w"> </span>openai
+
+<span class="c1"># 3. Восстановите переменные окружения</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">OPENAI_API_KEY</span><span class="o">=</span><span class="s2">&quot;sk-your-original-key&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="id19">
+<h2>Чек-лист миграции<a class="headerlink" href="#id19" title="Permalink to this heading"></a></h2>
+<table class="docutils align-default" id="id22">
+<caption><span class="caption-text">Чек-лист для миграции</span><a class="headerlink" href="#id22" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 70.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Задача</p></th>
+<th class="head"><p>Статус</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>☐ Установлен <code class="docutils literal notranslate"><span class="pre">evolution-openai</span></code></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>☐ Обновлены импорты во всех файлах</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>☐ Изменена аутентификация</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>☐ Обновлены переменные окружения</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>☐ Исправлены названия моделей</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>☐ Обновлены исключения</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>☐ Обновлены конфигурационные файлы</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>☐ Протестировано подключение</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p>☐ Протестированы основные функции</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p>☐ Обновлена документация проекта</p></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id20">
+<h2>Заключение<a class="headerlink" href="#id20" title="Permalink to this heading"></a></h2>
+<p>Миграция с OpenAI SDK на Evolution OpenAI - это простой процесс, который требует минимальных изменений в коде. Основное отличие - в способе аутентификации, все остальное остается неизменным.</p>
+<p><strong>Преимущества после миграции:</strong></p>
+<p>✅ Доступ к моделям на платформе Cloud.ru
+✅ Автоматическое управление токенами
+✅ Тот же удобный API
+✅ Полная совместимость с существующим кодом
+✅ Поддержка всех современных возможностей</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="error_handling.html" class="btn btn-neutral float-left" title="Обработка ошибок" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="README_DOCS.html" class="btn btn-neutral float-right" title="Работа с документацией" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Evolution OpenAI Team.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
