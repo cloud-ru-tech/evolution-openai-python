@@ -1,0 +1,36 @@
+{
+  "name": "Debian",
+	"build": {
+		"dockerfile": "Dockerfile",
+		"context": "..",
+		"args": {
+			"VARIANT": "3.9"
+		}
+	},
+
+  "postStartCommand": "make install-dev",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ],
+      "settings": { 
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "python.pythonPath": ".venv/bin/python",
+        "python.defaultInterpreterPath": ".venv/bin/python",
+        "python.typeChecking": "basic",
+        "terminal.integrated.env.linux": {
+          "PATH": "/home/vscode/.rye/shims:${env:PATH}"
+        },
+      "forwardPorts": [
+        8000
+      ]
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {}
+  }
+
+}

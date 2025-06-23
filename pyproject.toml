@@ -1,0 +1,316 @@
+[project]
+name = "evolution-openai"
+version = "0.1.0"
+description = "Evolution OpenAI with automatic token management"
+dynamic = ["readme"]
+license-files = ["LICEN[CS]E*"]
+authors = [
+    { name = "Evolution ML Inference Team", email = "support@cloud.ru" },
+]
+maintainers = [
+    { name = "Evolution ML Inference Team", email = "support@cloud.ru" },
+]
+dependencies = [
+    "openai>=1.30.0, <2",
+    "requests>=2.25.0, <3",
+    "python-dotenv>=1.0.0, <2",
+    "httpx>=0.23.0, <1",
+]
+requires-python = ">= 3.8"
+keywords = ["openai", "cloud.ru", "ai", "ml", "api", "sdk", "client", "chatgpt", "gpt"]
+classifiers = [
+    "Typing :: Typed",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: Internet :: WWW/HTTP :: HTTP Servers",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+[project.urls]
+Homepage = "https://github.com/cloud-ru-tech/evolution-openai-python"
+Repository = "https://github.com/cloud-ru-tech/evolution-openai-python.git"
+Documentation = "https://cloud-ru-tech.github.io/evolution-openai-python/"
+"Bug Reports" = "https://github.com/cloud-ru-tech/evolution-openai-python/issues"
+Changelog = "https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/CHANGELOG.md"
+
+[tool.rye]
+managed = true
+dev-dependencies = [
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
+    "pyright>=1.1.350",
+    "pre-commit>=3.0.0",
+    "build>=0.10.0",
+    "responses>=0.23.0",
+    "pytest-mock>=3.10.0",
+    "time-machine>=2.0.0",
+    "dirty-equals>=0.6.0",
+    "rich>=13.7.0",
+    "types-requests>=2.32.0.20241016",
+    "python-semantic-release>=10.1.0",
+    "twine>=6.1.0",
+    "sphinx>=7.1.2",
+    "sphinx-rtd-theme>=3.0.2",
+    "myst-parser>=3.0.1",
+    "sphinx-autodoc-typehints>=2.0.1",
+]
+
+[tool.rye.scripts]
+format = { chain = [
+  "format:ruff",
+  "format:docs",
+  "fix:ruff",
+  "format:ruff",
+]}
+"format:docs" = "python scripts/utils/ruffen-docs.py README.md"
+"format:ruff" = "ruff format"
+
+lint = { chain = [
+    "check:ruff",
+    "typecheck",
+    "check:importable",
+]}
+"lint:fix" = { chain = [
+    "fix:ruff",
+    "format:ruff",
+]}
+"check:ruff" = "ruff check ."
+"fix:ruff" = "ruff check --fix ."
+
+"check:importable" = "python -c 'import evolution_openai'"
+
+typecheck = { chain = [
+    "typecheck:pyright",
+    "typecheck:mypy"
+]}
+"typecheck:pyright" = "pyright"
+"typecheck:mypy" = "mypy ."
+
+test = "pytest"
+"test:cov" = "pytest --cov=evolution_openai --cov-report=html --cov-report=term"
+
+[build-system]
+requires = ["hatchling==1.26.3", "hatch-vcs", "hatch-fancy-pypi-readme"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "src/*"
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/evolution_openai"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/*.toml",
+  "/*.json",
+  "/*.lock",
+  "/*.md",
+  "/mypy.ini",
+  "examples/*",
+  "src/*",
+  "tests/*",
+]
+
+[tool.hatch.metadata.hooks.fancy-pypi-readme]
+content-type = "text/markdown"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.fragments]]
+path = "README.md"
+
+[[tool.hatch.metadata.hooks.fancy-pypi-readme.substitutions]]
+pattern = '\[(.+?)\]\(((?!https?://)\S+?)\)'
+replacement = '[\1](https://github.com/cloud-ru-tech/evolution-openai-python/tree/main/\g<2>)'
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = "-ra -q --strict-markers --strict-config --tb=short"
+xfail_strict = true
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "unit: marks tests as unit tests",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning",
+]
+
+[tool.pyright]
+typeCheckingMode = "strict"
+pythonVersion = "3.8"
+
+exclude = [
+    "_dev",
+    ".venv",
+    ".rye",
+    "build",
+    "dist",
+]
+
+reportImplicitOverride = true
+reportOverlappingOverload = false
+reportImportCycles = false
+reportPrivateUsage = false
+
+[tool.ruff]
+line-length = 79
+output-format = "grouped"
+target-version = "py38"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    # isort
+    "I",
+    # bugbear rules
+    "B",
+    # remove unused imports
+    "F401",
+    # bare except statements
+    "E722",
+    # unused arguments
+    "ARG",
+    # print statements
+    "T201",
+    "T203",
+    # misuse of typing.TYPE_CHECKING
+    "TC004",
+    # import rules
+    "TID251",
+    # pycodestyle
+    "E",
+    "W",
+    # pyflakes
+    "F",
+    # naming conventions
+    "N",
+]
+ignore = [
+    # mutable defaults
+    "B006",
+    # line too long (handled by formatter)
+    "E501",
+    # whitespace before ':'
+    "E203",
+    # Unused method argument
+    "ARG002"
+]
+unfixable = [
+    # disable auto fix for print statements
+    "T201",
+    "T203",
+]
+
+[tool.ruff.lint.isort]
+length-sort = true
+length-sort-straight = true
+combine-as-imports = true
+extra-standard-library = ["typing_extensions"]
+known-first-party = ["evolution_openai", "tests"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**.py" = ["T201", "T203"]
+"examples/**.py" = ["T201", "T203"]
+"scripts/**.py" = ["T201", "T203"]
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = true
+strict_equality = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+
+[tool.coverage.run]
+source = ["evolution_openai"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+] 
+
+[tool.semantic_release]
+major_on_zero = true
+version_variable = [
+    "src/evolution_openai/__init__.py:__version__"
+]
+version_toml = [
+    "pyproject.toml:project.version"
+]
+
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.commit_parser_options]
+minor_tags = ["feat"]
+patch_tags = ["fix", "perf"]
+parse_squash_commits = true
+ignore_merge_commits = true
+
+[tool.semantic_release.changelog]
+exclude_commit_patterns = [
+    '''chore(?:\([^)]*?\))?: .+''',
+    '''ci(?:\([^)]*?\))?: .+''',
+    '''refactor(?:\([^)]*?\))?: .+''',
+    '''style(?:\([^)]*?\))?: .+''',
+    '''test(?:\([^)]*?\))?: .+''',
+    '''build\((?!deps\): .+)'''
+]
+
+[tool.semantic_release.publish]
+upload_to_vcs_release = true
+upload_to_pypi = false
+upload_to_release = true
+
+[tool.semantic_release.remote]
+type = "github"
+token = { env = "GITHUB_TOKEN" }

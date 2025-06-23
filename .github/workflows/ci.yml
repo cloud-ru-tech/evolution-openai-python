@@ -1,0 +1,201 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    timeout-minutes: 10
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.44.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Install dependencies
+        run: make build && make install-dev
+
+      - name: Run linting
+        run: make lint-all
+
+  build:
+    timeout-minutes: 10
+    name: build
+    runs-on: ubuntu-latest
+    needs: [lint]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.44.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Install dependencies
+        run: make install-dev
+
+      - name: Build package
+        run: make build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  test:
+    timeout-minutes: 15
+    name: test
+    runs-on: ubuntu-latest
+    needs: [lint, build]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.44.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Install dependencies
+        run: make install-dev
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Run tests with coverage
+        run: make test
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            .coverage
+            htmlcov/
+            coverage.xml
+            coverage.json
+
+  docs:
+    timeout-minutes: 10
+    name: docs
+    runs-on: ubuntu-latest
+    needs: [lint, build, test]
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' || github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.44.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Install dependencies
+        run: make install-dev
+
+      - name: Build documentation
+        run: make docs
+
+      - name: Check documentation links
+        run: make docs-linkcheck
+
+      - name: Upload documentation artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs
+          path: docs/_build/html/
+
+  coverage-badge:
+    timeout-minutes: 5
+    name: coverage-badge
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: .
+
+      - name: Update Coverage Badge
+        uses: we-cli/coverage-badge-action@main
+        with:
+          coverage-file: coverage.json
+
+  test-examples:
+    timeout-minutes: 15
+    name: test-examples
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: github.event_name == 'pull_request' && github.base_ref == 'main' || github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rye
+        run: |
+          curl -sSf https://rye.astral.sh/get | bash
+          echo "$HOME/.rye/shims" >> $GITHUB_PATH
+        env:
+          RYE_VERSION: '0.44.0'
+          RYE_INSTALL_OPTION: '--yes'
+
+      - name: Install dependencies
+        run: make install-dev
+
+      - name: Run basic examples
+        env:
+          EVOLUTION_KEY_ID: ${{ secrets.EVOLUTION_KEY_ID }}
+          EVOLUTION_SECRET: ${{ secrets.EVOLUTION_SECRET }}
+          EVOLUTION_BASE_URL: ${{ secrets.EVOLUTION_BASE_URL }}
+        run: make run-examples
+
+      - name: Run async examples
+        env:
+          EVOLUTION_KEY_ID: ${{ secrets.EVOLUTION_KEY_ID }}
+          EVOLUTION_SECRET: ${{ secrets.EVOLUTION_SECRET }}
+          EVOLUTION_BASE_URL: ${{ secrets.EVOLUTION_BASE_URL }}
+        run: make run-async
+
+      - name: Run streaming examples
+        env:
+          EVOLUTION_KEY_ID: ${{ secrets.EVOLUTION_KEY_ID }}
+          EVOLUTION_SECRET: ${{ secrets.EVOLUTION_SECRET }}
+          EVOLUTION_BASE_URL: ${{ secrets.EVOLUTION_BASE_URL }}
+        run: make run-streaming
+
+      - name: Run token management examples
+        env:
+          EVOLUTION_KEY_ID: ${{ secrets.EVOLUTION_KEY_ID }}
+          EVOLUTION_SECRET: ${{ secrets.EVOLUTION_SECRET }}
+          EVOLUTION_BASE_URL: ${{ secrets.EVOLUTION_BASE_URL }}
+        run: make run-tokens
