@@ -1,6 +1,6 @@
 [project]
 name = "evolution-openai"
-version = "1.0.1"
+version = "1.0.2"
 description = "Evolution OpenAI with automatic token management"
 dynamic = ["readme"]
 license-files = ["LICEN[CS]E*"]

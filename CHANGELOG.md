@@ -2,6 +2,14 @@
 
 <!-- version list -->
 
+## v1.0.2 (2025-06-23)
+
+### Bug Fixes
+
+- **docs**: Add requirements.txt to docs dir
+  ([`a8d75c2`](https://github.com/cloud-ru-tech/evolution-openai-python/commit/a8d75c26965a116928c739dfd2afeca678262a93))
+
+
 ## v1.0.1 (2025-06-23)
 
 ### Bug Fixes
