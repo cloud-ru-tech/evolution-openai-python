@@ -64,10 +64,10 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         key_id: str,
         secret: str,
         base_url: str,
+        project: str,
         # Параметры совместимые с OpenAI SDK
         api_key: Optional[str] = None,  # Игнорируется
         organization: Optional[str] = None,
-        project: Optional[str] = None,
         timeout: Union[float, None] = None,
         max_retries: int = 2,
         default_headers: Optional[Dict[str, str]] = None,
@@ -84,9 +84,11 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         # Сохраняем Cloud.ru credentials
         self.key_id = key_id
         self.secret = secret
+        self.project = project
 
         # Инициализируем token manager
         self.token_manager = EvolutionTokenManager(key_id, secret)
+        self._need_token_refresh: bool = False
 
         # Получаем первоначальный токен
         initial_token = self.token_manager.get_valid_token()
@@ -105,66 +107,41 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
             **kwargs,
         )
 
-        # Переопределяем _client для автоматического обновления токенов
-        self._patch_client()
+    @override
+    def _should_retry(self, response: Any) -> bool: # type: ignore[reportUnknownMemberType]
+        """Определяет, нужно ли повторять запрос для данного ответа.
 
-    def _patch_client(self) -> None:  # type: ignore[reportUnknownMemberType]
-        """Патчим client для автоматического обновления токенов"""
-        # В новых версиях используется 'request'
-        if hasattr(self._client, "request"):  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType]
-            original_request = self._client.request  # type: ignore[reportUnknownMemberType,reportUnknownVariableType]
-            method_name = "request"
-        else:
-            logger.warning("Не удалось найти метод request в HTTP клиенте")
-            return
+        При получении 401 или 403 инициирует обновление токена и позволяет выполнить повтор.
 
-        def patched_request(*args: Any, **kwargs: Any) -> Any:  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType,reportUnknownVariableType,reportUnknownReturnType]
-            # Обновляем токен перед каждым запросом
-            current_token = self.token_manager.get_valid_token()
-            self.api_key = current_token or ""  # type: ignore[reportUnknownMemberType]
-            self._update_auth_headers(current_token or "")
+        :param response: Ответ httpx.Response от сервера.
+        :return: True если нужно сделать retry, иначе — результат родительского метода.
+        """
+        if response.status_code in (401, 403):
+            self._need_token_refresh = True
+            return True
+        return super()._should_retry(response)  # type: ignore[reportUnknownMemberType]
 
-            try:
-                return original_request(*args, **kwargs)
-            except Exception as e:
-                # Если ошибка авторизации, принудительно обновляем токен
-                if self._is_auth_error(e):
-                    logger.warning(
-                        "Ошибка авторизации, принудительно обновляем токен"
-                    )
-                    self.token_manager.invalidate_token()
-                    new_token = self.token_manager.get_valid_token()
-                    self.api_key = new_token or ""  # type: ignore[reportUnknownMemberType]
-                    # Повторяем запрос с новым токеном
-                    self._update_auth_headers(new_token or "")
-                    return original_request(*args, **kwargs)
-                else:
-                    raise
+    @override
+    def _prepare_request(self, request: Any) -> None:  # type: ignore[reportUnknownMemberType]
+        """Мутирует объект запроса перед отправкой.
 
-        # Устанавливаем патченый метод
-        setattr(self._client, method_name, patched_request)  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType]
+        При необходимости обновляет токен авторизации
+        и всегда добавляет заголовок x-project-id с текущим проектом.
 
-    def _update_auth_headers(self, token: str) -> None:
-        """Обновляет заголовки авторизации"""
-        auth_header = f"Bearer {token}"
-        if hasattr(self._client, "_auth_headers"):
-            self._client._auth_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
-        elif hasattr(self._client, "default_headers"):
-            self._client.default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+        :param request: Объект httpx.Request, готовящийся к отправке.
+        """
+        if self._need_token_refresh or not self.is_token_valid:
+            token = self.refresh_token()
+            self.api_key = token
+            request.headers["Authorization"] = f"Bearer {token}"
+            self._need_token_refresh = False
+        request.headers["x-project-id"] = self.project
 
-    def _is_auth_error(self, error: Exception) -> bool:
-        """Проверяет, является ли ошибка связанной с авторизацией"""
-        error_str = str(error).lower()
-        return any(
-            keyword in error_str
-            for keyword in [
-                "unauthorized",
-                "401",
-                "authentication",
-                "forbidden",
-                "403",
-            ]
-        )
+
+    @property
+    def is_token_valid(self) -> bool:
+        """Возвращает статус валидности токена."""
+        return self.token_manager.is_token_valid()
 
     @property
     def current_token(self) -> Optional[str]:
@@ -231,10 +208,10 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         key_id: str,
         secret: str,
         base_url: str,
+        project: str,
         # Параметры совместимые с AsyncOpenAI
         api_key: Optional[str] = None,
         organization: Optional[str] = None,
-        project: Optional[str] = None,
         timeout: Union[float, None] = None,
         max_retries: int = 2,
         default_headers: Optional[Dict[str, str]] = None,
@@ -250,10 +227,11 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         # Сохраняем Cloud.ru credentials
         self.key_id = key_id
         self.secret = secret
+        self.project = project
 
         # Инициализируем token manager
         self.token_manager = EvolutionTokenManager(key_id, secret)
-
+        self._need_token_refresh: bool = False
         # Получаем первоначальный токен
         initial_token = self.token_manager.get_valid_token()
 
@@ -271,66 +249,41 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
             **kwargs,
         )
 
-        # Патчим async client
-        self._patch_async_client()
+    @override
+    def _should_retry(self, response: Any) -> bool: # type: ignore[reportUnknownMemberType]
+        """Определяет, нужно ли повторять запрос для данного ответа.
 
-    def _patch_async_client(self) -> None:
-        """Патчим async client для автоматического обновления токенов"""
-        # В новых версиях используется 'request'
-        if hasattr(self._client, "request"):  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType]
-            original_request = self._client.request  # type: ignore[reportUnknownMemberType,reportUnknownVariableType]
-            method_name = "request"
-        else:
-            logger.warning(
-                "Не удалось найти метод request в async HTTP клиенте"
-            )
-            return
+        При получении 401 или 403 инициирует обновление токена и позволяет выполнить повтор.
 
-        async def patched_request(*args: Any, **kwargs: Any) -> Any:  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType,reportUnknownVariableType,reportUnknownReturnType]
-            # Обновляем токен перед каждым запросом
-            current_token = self.token_manager.get_valid_token()
-            self.api_key = current_token or ""  # type: ignore[reportUnknownMemberType,reportUnknownVariableType]
-            self._update_auth_headers(current_token or "")
+        :param response: Ответ httpx.Response от сервера.
+        :return: True если нужно сделать retry, иначе — результат родительского метода.
+        """
+        if response.status_code in (401, 403):
+            self._need_token_refresh = True
+            return True
+        return super()._should_retry(response) # type: ignore[reportUnknownMemberType]
 
-            try:
-                return await original_request(*args, **kwargs)
-            except Exception as e:
-                if self._is_auth_error(e):
-                    logger.warning(
-                        "Ошибка авторизации, принудительно обновляем токен"
-                    )
-                    self.token_manager.invalidate_token()
-                    new_token = self.token_manager.get_valid_token()
-                    self.api_key = new_token or ""  # type: ignore[reportUnknownMemberType,reportUnknownVariableType]
-                    self._update_auth_headers(new_token or "")
-                    return await original_request(*args, **kwargs)
-                else:
-                    raise
+    @override
+    async def _prepare_request(self, request: Any) -> None: # type: ignore[reportUnknownMemberType]
+        """Мутирует объект запроса перед отправкой.
 
-        # Устанавливаем патченый метод
-        setattr(self._client, method_name, patched_request)  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType]
+        При необходимости обновляет токен авторизации
+        и всегда добавляет заголовок x-project-id с текущим проектом.
 
-    def _update_auth_headers(self, token: str) -> None:
-        """Обновляет заголовки авторизации"""
-        auth_header = f"Bearer {token}"
-        if hasattr(self._client, "_auth_headers"):
-            self._client._auth_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
-        elif hasattr(self._client, "default_headers"):
-            self._client.default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+        :param request: Объект httpx.Request, готовящийся к отправке.
+        """
+        if self._need_token_refresh or not self.is_token_valid:
+            token = self.refresh_token()
+            self.api_key = token
+            request.headers["Authorization"] = f"Bearer {token}"
+            self._need_token_refresh = False
+        request.headers["x-project-id"] = self.project
 
-    def _is_auth_error(self, error: Exception) -> bool:
-        """Проверяет, является ли ошибка связанной с авторизацией"""
-        error_str = str(error).lower()
-        return any(
-            keyword in error_str
-            for keyword in [
-                "unauthorized",
-                "401",
-                "authentication",
-                "forbidden",
-                "403",
-            ]
-        )
+
+    @property
+    def is_token_valid(self) -> bool:
+        """Возвращает статус валидности токена."""
+        return self.token_manager.is_token_valid()
 
     @property
     def current_token(self) -> Optional[str]:
