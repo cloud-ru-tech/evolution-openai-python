@@ -26,6 +26,8 @@ certifi==2025.6.15
     # via httpcore
     # via httpx
     # via requests
+cffi==1.17.1
+    # via cryptography
 cfgv==3.4.0
     # via pre-commit
 charset-normalizer==3.4.2
@@ -37,6 +39,8 @@ click-option-group==0.5.7
     # via python-semantic-release
 coverage==7.6.1
     # via pytest-cov
+cryptography==45.0.4
+    # via secretstorage
 deprecated==1.2.18
     # via python-semantic-release
 dirty-equals==0.9.0
@@ -93,6 +97,9 @@ jaraco-context==6.0.1
     # via keyring
 jaraco-functools==4.1.0
     # via keyring
+jeepney==0.9.0
+    # via keyring
+    # via secretstorage
 jinja2==3.1.6
     # via myst-parser
     # via python-semantic-release
@@ -135,6 +142,8 @@ platformdirs==4.3.6
 pluggy==1.5.0
     # via pytest
 pre-commit==3.5.0
+pycparser==2.22
+    # via cffi
 pydantic==2.10.6
     # via openai
     # via python-semantic-release
@@ -189,6 +198,8 @@ rich==14.0.0
     # via python-semantic-release
     # via twine
 ruff==0.12.0
+secretstorage==3.3.3
+    # via keyring
 shellingham==1.5.4
     # via python-semantic-release
 six==1.17.0
