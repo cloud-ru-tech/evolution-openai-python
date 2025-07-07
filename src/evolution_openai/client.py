@@ -67,7 +67,7 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         # Параметры совместимые с OpenAI SDK
         api_key: Optional[str] = None,  # Игнорируется
         organization: Optional[str] = None,
-        project: Optional[str] = None,
+        project_id: Optional[str] = None,
         timeout: Union[float, None] = None,
         max_retries: int = 2,
         default_headers: Optional[Dict[str, str]] = None,
@@ -84,6 +84,7 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         # Сохраняем Cloud.ru credentials
         self.key_id = key_id
         self.secret = secret
+        self.project_id = project_id
 
         # Инициализируем token manager
         self.token_manager = EvolutionTokenManager(key_id, secret)
@@ -91,15 +92,17 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         # Получаем первоначальный токен
         initial_token = self.token_manager.get_valid_token()
 
+        # Подготавливаем заголовки с project_id
+        prepared_headers = self._prepare_default_headers(default_headers)
+
         # Инициализируем родительский OpenAI client
         super().__init__(  # type: ignore[reportUnknownMemberType]
             api_key=initial_token,
             organization=organization,
-            project=project,
             base_url=base_url,
             timeout=timeout,
             max_retries=max_retries,
-            default_headers=default_headers,
+            default_headers=prepared_headers,
             default_query=default_query,
             http_client=http_client,
             **kwargs,
@@ -107,6 +110,31 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
 
         # Переопределяем _client для автоматического обновления токенов
         self._patch_client()
+
+        # Устанавливаем заголовки после инициализации родительского класса
+        self._initialize_headers()
+
+    def _prepare_default_headers(
+        self, user_headers: Optional[Dict[str, str]]
+    ) -> Dict[str, str]:
+        """Подготавливает заголовки по умолчанию с учетом project_id"""
+        headers: Dict[str, str] = {}
+
+        # Добавляем пользовательские заголовки
+        if user_headers:
+            headers.update(user_headers)
+
+        # Добавляем project_id заголовок если он установлен
+        if self.project_id:
+            headers["x-project-id"] = self.project_id
+
+        return headers
+
+    def _initialize_headers(self) -> None:
+        """Инициализирует заголовки после создания клиента"""
+        current_token = self.token_manager.get_valid_token()
+        if current_token:
+            self._update_auth_headers(current_token)
 
     def _patch_client(self) -> None:  # type: ignore[reportUnknownMemberType]
         """Патчим client для автоматического обновления токенов"""
@@ -147,10 +175,41 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
     def _update_auth_headers(self, token: str) -> None:
         """Обновляет заголовки авторизации"""
         auth_header = f"Bearer {token}"
+        headers_updated = False
+
+        # Пытаемся обновить заголовки различными способами
         if hasattr(self._client, "_auth_headers"):
             self._client._auth_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
-        elif hasattr(self._client, "default_headers"):
+            # Добавляем project_id заголовок если он установлен
+            if self.project_id:
+                self._client._auth_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        if hasattr(self._client, "default_headers"):
             self._client.default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+            # Добавляем project_id заголовок если он установлен
+            if self.project_id:
+                self._client.default_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        # Пытаемся обновить заголовки через _default_headers (для новых версий OpenAI SDK)
+        if hasattr(self._client, "_default_headers"):
+            self._client._default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+            if self.project_id:
+                self._client._default_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        # Обновляем заголовки на уровне самого клиента
+        if hasattr(self, "default_headers") and self.default_headers:
+            self.default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+            if self.project_id:
+                self.default_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        if not headers_updated:
+            logger.warning(
+                "Не удалось обновить заголовки - структура HTTP клиента не распознана"
+            )
 
     def _is_auth_error(self, error: Exception) -> bool:
         """Проверяет, является ли ошибка связанной с авторизацией"""
@@ -180,6 +239,31 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         """Возвращает информацию о токене"""
         return self.token_manager.get_token_info()
 
+    def get_request_headers(self) -> Dict[str, str]:
+        """Возвращает текущие заголовки запроса для отладки"""
+        headers: Dict[str, str] = {}
+
+        # Собираем заголовки из различных источников
+        if (
+            hasattr(self._client, "_auth_headers")
+            and self._client._auth_headers
+        ):
+            headers.update(self._client._auth_headers)  # type: ignore[reportAttributeAccessIssue]
+        if (
+            hasattr(self._client, "default_headers")
+            and self._client.default_headers
+        ):
+            headers.update(self._client.default_headers)  # type: ignore[reportAttributeAccessIssue]
+        if (
+            hasattr(self._client, "_default_headers")
+            and self._client._default_headers
+        ):
+            headers.update(self._client._default_headers)  # type: ignore[reportAttributeAccessIssue]
+        if hasattr(self, "default_headers") and self.default_headers:
+            headers.update(self.default_headers)  # type: ignore[reportAttributeAccessIssue]
+
+        return headers
+
     @override
     def with_options(self, **kwargs: Any) -> "EvolutionOpenAI":  # type: ignore[reportUnknownReturnType,misc]
         """Создает новый клиент с дополнительными опциями"""
@@ -189,7 +273,7 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
             "secret": self.secret,
             "base_url": self.base_url,
             "organization": self.organization,
-            "project": getattr(self, "project", None),
+            "project_id": self.project_id,
             "timeout": self.timeout,
             "max_retries": self.max_retries,
             "default_headers": self.default_headers,
@@ -234,7 +318,7 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         # Параметры совместимые с AsyncOpenAI
         api_key: Optional[str] = None,
         organization: Optional[str] = None,
-        project: Optional[str] = None,
+        project_id: Optional[str] = None,
         timeout: Union[float, None] = None,
         max_retries: int = 2,
         default_headers: Optional[Dict[str, str]] = None,
@@ -250,6 +334,7 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         # Сохраняем Cloud.ru credentials
         self.key_id = key_id
         self.secret = secret
+        self.project_id = project_id
 
         # Инициализируем token manager
         self.token_manager = EvolutionTokenManager(key_id, secret)
@@ -257,15 +342,17 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         # Получаем первоначальный токен
         initial_token = self.token_manager.get_valid_token()
 
+        # Подготавливаем заголовки с project_id
+        prepared_headers = self._prepare_default_headers(default_headers)
+
         # Инициализируем родительский AsyncOpenAI client
         super().__init__(  # type: ignore[reportUnknownMemberType]
             api_key=initial_token,
             organization=organization,
-            project=project,
             base_url=base_url,
             timeout=timeout,
             max_retries=max_retries,
-            default_headers=default_headers,
+            default_headers=prepared_headers,
             default_query=default_query,
             http_client=http_client,
             **kwargs,
@@ -273,6 +360,31 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
 
         # Патчим async client
         self._patch_async_client()
+
+        # Устанавливаем заголовки после инициализации родительского класса
+        self._initialize_headers()
+
+    def _prepare_default_headers(
+        self, user_headers: Optional[Dict[str, str]]
+    ) -> Dict[str, str]:
+        """Подготавливает заголовки по умолчанию с учетом project_id"""
+        headers: Dict[str, str] = {}
+
+        # Добавляем пользовательские заголовки
+        if user_headers:
+            headers.update(user_headers)
+
+        # Добавляем project_id заголовок если он установлен
+        if self.project_id:
+            headers["x-project-id"] = self.project_id
+
+        return headers
+
+    def _initialize_headers(self) -> None:
+        """Инициализирует заголовки после создания клиента"""
+        current_token = self.token_manager.get_valid_token()
+        if current_token:
+            self._update_auth_headers(current_token)
 
     def _patch_async_client(self) -> None:
         """Патчим async client для автоматического обновления токенов"""
@@ -313,10 +425,41 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
     def _update_auth_headers(self, token: str) -> None:
         """Обновляет заголовки авторизации"""
         auth_header = f"Bearer {token}"
+        headers_updated = False
+
+        # Пытаемся обновить заголовки различными способами
         if hasattr(self._client, "_auth_headers"):
             self._client._auth_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
-        elif hasattr(self._client, "default_headers"):
+            # Добавляем project_id заголовок если он установлен
+            if self.project_id:
+                self._client._auth_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        if hasattr(self._client, "default_headers"):
             self._client.default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+            # Добавляем project_id заголовок если он установлен
+            if self.project_id:
+                self._client.default_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        # Пытаемся обновить заголовки через _default_headers (для новых версий OpenAI SDK)
+        if hasattr(self._client, "_default_headers"):
+            self._client._default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+            if self.project_id:
+                self._client._default_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        # Обновляем заголовки на уровне самого клиента
+        if hasattr(self, "default_headers") and self.default_headers:
+            self.default_headers["Authorization"] = auth_header  # type: ignore[reportAttributeAccessIssue]
+            if self.project_id:
+                self.default_headers["x-project-id"] = self.project_id  # type: ignore[reportAttributeAccessIssue]
+            headers_updated = True
+
+        if not headers_updated:
+            logger.warning(
+                "Не удалось обновить заголовки - структура HTTP клиента не распознана"
+            )
 
     def _is_auth_error(self, error: Exception) -> bool:
         """Проверяет, является ли ошибка связанной с авторизацией"""
@@ -346,6 +489,31 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         """Возвращает информацию о токене"""
         return self.token_manager.get_token_info()
 
+    def get_request_headers(self) -> Dict[str, str]:
+        """Возвращает текущие заголовки запроса для отладки"""
+        headers: Dict[str, str] = {}
+
+        # Собираем заголовки из различных источников
+        if (
+            hasattr(self._client, "_auth_headers")
+            and self._client._auth_headers
+        ):
+            headers.update(self._client._auth_headers)  # type: ignore[reportAttributeAccessIssue]
+        if (
+            hasattr(self._client, "default_headers")
+            and self._client.default_headers
+        ):
+            headers.update(self._client.default_headers)  # type: ignore[reportAttributeAccessIssue]
+        if (
+            hasattr(self._client, "_default_headers")
+            and self._client._default_headers
+        ):
+            headers.update(self._client._default_headers)  # type: ignore[reportAttributeAccessIssue]
+        if hasattr(self, "default_headers") and self.default_headers:
+            headers.update(self.default_headers)  # type: ignore[reportAttributeAccessIssue]
+
+        return headers
+
     @override
     def with_options(self, **kwargs: Any) -> "EvolutionAsyncOpenAI":  # type: ignore[reportUnknownReturnType,misc]
         """Создает новый асинхронный клиент с дополнительными опциями"""
@@ -355,7 +523,7 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
             "secret": self.secret,
             "base_url": self.base_url,
             "organization": self.organization,
-            "project": getattr(self, "project", None),
+            "project_id": self.project_id,
             "timeout": self.timeout,
             "max_retries": self.max_retries,
             "default_headers": self.default_headers,

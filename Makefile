@@ -19,11 +19,12 @@ help:
 	@echo "  type-check   Run type checking (pyright + mypy)"
 	@echo ""
 	@echo "Examples:"
-	@echo "  run-examples      Run basic usage examples"
-	@echo "  run-all-examples  Run all examples"
-	@echo "  run-streaming     Run streaming examples"
-	@echo "  run-async         Run async examples"
-	@echo "  run-tokens        Run token management examples"
+	@echo "  run-examples            Run basic usage examples"
+	@echo "  run-all-examples        Run all examples"
+	@echo "  run-streaming           Run streaming examples"
+	@echo "  run-async               Run async examples"
+	@echo "  run-tokens              Run token management examples"
+	@echo "  run-foundation-models   Run foundation models examples"
 	@echo ""
 	@echo "Build:"
 	@echo "  clean        Clean build artifacts"
@@ -57,6 +58,9 @@ shell:
 # Testing
 test:
 	rye run pytest tests/ -v --cov=evolution_openai --cov-report=html --cov-report=term --cov-report=xml:coverage.xml --cov-report=json:coverage.json
+
+test-foundation-models:
+	rye run pytest tests/test_foundation_models_*.py -v
 
 # Code quality
 lint:
@@ -208,6 +212,10 @@ run-async:
 run-tokens:
 	@if [ -f .env ]; then echo "Загружение переменных окружения из файла .env..."; export $$(grep -v '^#' .env | xargs); fi; \
 	rye run python examples/token_management.py
+
+run-foundation-models:
+	@if [ -f .env ]; then echo "Загружение переменных окружения из файла .env..."; export $$(grep -v '^#' .env | xargs); fi; \
+	rye run python examples/foundation_models_example.py
 
 # Package info
 info:
