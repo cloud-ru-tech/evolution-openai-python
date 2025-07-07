@@ -2,6 +2,22 @@
 
 <!-- version list -->
 
+## v1.0.3 (2025-07-07)
+
+### Bug Fixes
+
+- Add FM examples to ci ([#2](https://github.com/cloud-ru-tech/evolution-openai-python/pull/2),
+  [`aea9eb9`](https://github.com/cloud-ru-tech/evolution-openai-python/commit/aea9eb9dffb89142e24c63b3fc994780cbaf1075))
+
+- Add more tests for client.py and refactor docs links
+  ([#2](https://github.com/cloud-ru-tech/evolution-openai-python/pull/2),
+  [`aea9eb9`](https://github.com/cloud-ru-tech/evolution-openai-python/commit/aea9eb9dffb89142e24c63b3fc994780cbaf1075))
+
+- Support project_id for foundation-models
+  ([#2](https://github.com/cloud-ru-tech/evolution-openai-python/pull/2),
+  [`aea9eb9`](https://github.com/cloud-ru-tech/evolution-openai-python/commit/aea9eb9dffb89142e24c63b3fc994780cbaf1075))
+
+
 ## v1.0.2 (2025-06-23)
 
 ### Bug Fixes
