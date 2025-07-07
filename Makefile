@@ -59,6 +59,9 @@ shell:
 test:
 	rye run pytest tests/ -v --cov=evolution_openai --cov-report=html --cov-report=term --cov-report=xml:coverage.xml --cov-report=json:coverage.json
 
+test-foundation-models:
+	rye run pytest tests/test_foundation_models_*.py -v
+
 # Code quality
 lint:
 	rye run ruff check .

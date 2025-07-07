@@ -81,7 +81,6 @@ def basic_foundation_models_example():
                 print(f"✅ Ответ: {content}")
                 print(f"📊 Модель: {response.model}")
                 print(f"🔢 Токенов: {response.usage.total_tokens}")
-                print(f"🏷️ Project ID: {PROJECT_ID or 'не установлен'}")
                 return True
             else:
                 print("❌ Получен пустой ответ")
@@ -340,7 +339,6 @@ def main():
     print("🚀 Evolution Foundation Models - Примеры использования\n")
     print(f"🌐 Endpoint: {ENDPOINT_URL}")
     print(f"🤖 Модель: {DEFAULT_MODEL}")
-    print(f"🏷️ Project ID: {PROJECT_ID or 'не установлен'}")
 
     # Показываем, используются ли Foundation Models
     is_foundation_models = (
