@@ -74,6 +74,7 @@ Evolution OpenAI Documentation
    usage
    async_usage
    streaming
+   foundation_models
    error_handling
    migration
 
@@ -82,8 +83,6 @@ Evolution OpenAI Documentation
    :caption: Дополнительно:
 
    README_DOCS
-   workflow
-   coverage-setup
 
 Индексы и таблицы
 =================
