@@ -244,11 +244,20 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         headers: Dict[str, str] = {}
 
         # Собираем заголовки из различных источников
-        if hasattr(self._client, "_auth_headers"):
+        if (
+            hasattr(self._client, "_auth_headers")
+            and self._client._auth_headers
+        ):
             headers.update(self._client._auth_headers)  # type: ignore[reportAttributeAccessIssue]
-        if hasattr(self._client, "default_headers"):
+        if (
+            hasattr(self._client, "default_headers")
+            and self._client.default_headers
+        ):
             headers.update(self._client.default_headers)  # type: ignore[reportAttributeAccessIssue]
-        if hasattr(self._client, "_default_headers"):
+        if (
+            hasattr(self._client, "_default_headers")
+            and self._client._default_headers
+        ):
             headers.update(self._client._default_headers)  # type: ignore[reportAttributeAccessIssue]
         if hasattr(self, "default_headers") and self.default_headers:
             headers.update(self.default_headers)  # type: ignore[reportAttributeAccessIssue]
@@ -485,11 +494,20 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         headers: Dict[str, str] = {}
 
         # Собираем заголовки из различных источников
-        if hasattr(self._client, "_auth_headers"):
+        if (
+            hasattr(self._client, "_auth_headers")
+            and self._client._auth_headers
+        ):
             headers.update(self._client._auth_headers)  # type: ignore[reportAttributeAccessIssue]
-        if hasattr(self._client, "default_headers"):
+        if (
+            hasattr(self._client, "default_headers")
+            and self._client.default_headers
+        ):
             headers.update(self._client.default_headers)  # type: ignore[reportAttributeAccessIssue]
-        if hasattr(self._client, "_default_headers"):
+        if (
+            hasattr(self._client, "_default_headers")
+            and self._client._default_headers
+        ):
             headers.update(self._client._default_headers)  # type: ignore[reportAttributeAccessIssue]
         if hasattr(self, "default_headers") and self.default_headers:
             headers.update(self.default_headers)  # type: ignore[reportAttributeAccessIssue]

@@ -357,41 +357,6 @@ Streaming ответы
    except Exception as e:
        print(f"Неправильные параметры: {e}")
 
-Тестирование
-------------
-
-Запуск примеров
-~~~~~~~~~~~~~~~
-
-В проекте есть готовые примеры для Foundation Models:
-
-.. code-block:: bash
-
-   # Запуск примеров Foundation Models
-   python examples/foundation_models_example.py
-
-Интеграционные тесты
-~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Установка переменных окружения
-   export EVOLUTION_KEY_ID=your_key_id
-   export EVOLUTION_SECRET=your_secret
-   export EVOLUTION_PROJECT_ID=your_project_id
-   export EVOLUTION_FOUNDATION_MODELS_URL=https://foundation-models.api.cloud.ru/api/gigacube/openai/v1
-   export ENABLE_FOUNDATION_MODELS_TESTS=true
-
-   # Запуск тестов
-   pytest tests/test_foundation_models_integration.py -v
-
-Модульные тесты
-~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Запуск модульных тестов
-   pytest tests/test_foundation_models_unit.py -v
 
 Лучшие практики
 ---------------
@@ -516,12 +481,3 @@ Foundation Models могут работать медленнее обычных 
        timeout=120.0,  # 2 минуты
        max_retries=5,  # 5 попыток
    )
-
-Ссылки
-------
-
-- `Примеры Foundation Models <https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/examples/foundation_models_example.py>`_
-- `Интеграционные тесты <https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/tests/test_foundation_models_integration.py>`_
-- `Модульные тесты <https://github.com/cloud-ru-tech/evolution-openai-python/blob/main/tests/test_foundation_models_unit.py>`_
-- `Документация Cloud.ru <https://cloud.ru/docs/>`_
-- `OpenAI API Reference <https://platform.openai.com/docs/api-reference>`_ 
