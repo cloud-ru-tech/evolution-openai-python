@@ -43,12 +43,15 @@ def run_example(script_name: str, description: str) -> bool:
         return False
 
     try:
-        # Запуск примера
+        # Запуск примера (увеличенный таймаут для Foundation Models)
+        timeout_seconds = (
+            60 if script_name == "foundation_models_example.py" else 30
+        )
         result = subprocess.run(
             [sys.executable, str(script_path)],
             capture_output=True,
             text=True,
-            timeout=30,
+            timeout=timeout_seconds,
         )
 
         if result.stdout:
@@ -113,6 +116,12 @@ def main() -> bool:
         "EVOLUTION_SECRET",
         "EVOLUTION_BASE_URL",
     ]
+
+    # Проверяем опциональные переменные для Foundation Models
+    optional_vars = [
+        "EVOLUTION_FOUNDATION_MODELS_URL",
+        "EVOLUTION_PROJECT_ID",
+    ]
     missing_vars = [var for var in required_vars if not os.getenv(var)]
 
     if missing_vars:
@@ -128,12 +137,23 @@ def main() -> bool:
         print("\n✅ Все необходимые переменные окружения установлены")
         print("Примеры будут работать с реальным API")
 
+        # Показываем статус опциональных переменных
+        missing_optional = [var for var in optional_vars if not os.getenv(var)]
+        if missing_optional:
+            print(
+                f"ℹ️ Опциональные переменные не установлены: {', '.join(missing_optional)}"
+            )
+            print(
+                "Foundation Models примеры будут использовать значения по умолчанию"
+            )
+
     # Список примеров для запуска
     examples = [
         ("basic_usage.py", "Базовые примеры использования"),
         ("streaming_examples.py", "Примеры Streaming API"),
         ("token_management.py", "Управление токенами"),
         ("async_examples.py", "Асинхронные примеры"),
+        ("foundation_models_example.py", "Примеры Foundation Models"),
     ]
 
     # Статистика

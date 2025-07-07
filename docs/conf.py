@@ -13,8 +13,8 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 project = "Evolution OpenAI"
-copyright = "2024, Evolution OpenAI Team"
-author = "Evolution OpenAI Team"
+copyright = "2024, Evolution ML Inference Team"
+author = "Evolution ML Inference Team"
 release = "1.0.0"
 
 # -- General configuration ---------------------------------------------------

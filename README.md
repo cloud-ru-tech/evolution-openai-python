@@ -17,6 +17,9 @@
 - ✅ **Retry логика** при ошибках авторизации
 - ✅ **Поддержка .env файлов** для управления конфигурацией
 - ✅ **Интеграционные тесты** с реальным API
+- ✅ **Evolution Foundation Models** поддержка с `project_id`
+- ✅ **Готовые примеры** для Foundation Models
+- ✅ **Передовые AI модели** включая DeepSeek-R1, Qwen2.5 и другие
 
 ## 📦 Установка
 
@@ -37,24 +40,40 @@ client = OpenAI(api_key="sk-...")
 # ✅ СТАЛО (Evolution OpenAI)
 from evolution_openai import OpenAI
 
+# Для обычного использования
 client = OpenAI(
-    key_id="your_key_id", secret="your_secret", base_url="https://your-model-endpoint.cloud.ru/v1"
+    key_id="your_key_id", 
+    secret="your_secret", 
+    base_url="https://your-model-endpoint.cloud.ru/v1"
+)
+
+# Для Evolution Foundation Models
+client = OpenAI(
+    key_id="your_key_id", 
+    secret="your_secret", 
+    base_url="https://foundation-models.api.cloud.ru/api/gigacube/openai/v1",
+    project_id="your_project_id"  # Для Evolution Foundation Models
 )
 
 # Все остальное работает ТОЧНО ТАК ЖЕ!
 response = client.chat.completions.create(
-    model="default", messages=[{"role": "user", "content": "Hello!"}]
+    model="default",  # или "deepseek-ai/DeepSeek-R1-Distill-Llama-70B" для Foundation Models
+    messages=[{"role": "user", "content": "Hello!"}]
 )
 ```
 
 ### Основное использование
 
+#### Обычное использование
+
 ```python
 from evolution_openai import OpenAI
 
-# Инициализация client
+# Инициализация client для обычного использования
 client = OpenAI(
-    key_id="your_key_id", secret="your_secret", base_url="https://your-model-endpoint.cloud.ru/v1"
+    key_id="your_key_id", 
+    secret="your_secret", 
+    base_url="https://your-model-endpoint.cloud.ru/v1"
 )
 
 # Chat Completions
@@ -70,12 +89,54 @@ response = client.chat.completions.create(
 print(response.choices[0].message.content)
 ```
 
+#### 🚀 Evolution Foundation Models
+
+Библиотека полностью поддерживает **Evolution Foundation Models** - платформу для работы с передовыми AI моделями на Cloud.ru. Ключевые возможности:
+
+- **Автоматическое управление Project ID** - добавляет заголовок `x-project-id` автоматически
+- **Передовые модели** - DeepSeek-R1, Qwen2.5, RefalMachine/RuadaptQwen2.5-7B-Lite-Beta
+- **Специальный endpoint** - `https://foundation-models.api.cloud.ru/api/gigacube/openai/v1`
+- **Полная совместимость** с OpenAI SDK - все методы работают идентично
+
+```python
+from evolution_openai import OpenAI
+
+# Инициализация для Evolution Foundation Models
+client = OpenAI(
+    key_id="your_key_id",
+    secret="your_secret", 
+    base_url="https://foundation-models.api.cloud.ru/api/gigacube/openai/v1",
+    project_id="your_project_id"  # Автоматически добавляется в заголовки
+)
+
+# Использование Foundation Models
+response = client.chat.completions.create(
+    model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "What is artificial intelligence?"},
+    ],
+    max_tokens=150
+)
+
+print(response.choices[0].message.content)
+```
+
 ### Streaming
 
 ```python
-# Streaming responses
+# Для обычного использования
 stream = client.chat.completions.create(
-    model="default", messages=[{"role": "user", "content": "Tell me a story"}], stream=True
+    model="default", 
+    messages=[{"role": "user", "content": "Tell me a story"}], 
+    stream=True
+)
+
+# Для Foundation Models
+stream = client.chat.completions.create(
+    model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B", 
+    messages=[{"role": "user", "content": "Tell me a story"}], 
+    stream=True
 )
 
 for chunk in stream:
@@ -91,14 +152,24 @@ from evolution_openai import AsyncOpenAI
 
 
 async def main():
+    # Для обычного использования
     client = AsyncOpenAI(
         key_id="your_key_id",
         secret="your_secret",
         base_url="https://your-model-endpoint.cloud.ru/v1",
     )
 
+    # Для Foundation Models
+    client = AsyncOpenAI(
+        key_id="your_key_id",
+        secret="your_secret",
+        base_url="https://foundation-models.api.cloud.ru/api/gigacube/openai/v1",
+        project_id="your_project_id",  # Опционально для Foundation Models
+    )
+
     response = await client.chat.completions.create(
-        model="default", messages=[{"role": "user", "content": "Async hello!"}]
+        model="deepseek-ai/DeepSeek-R1-Distill-Llama-70B",  # или "default" для обычного использования
+        messages=[{"role": "user", "content": "Async hello!"}]
     )
 
     print(response.choices[0].message.content)
@@ -118,11 +189,26 @@ asyncio.run(main())
 cp env.example .env
 ```
 
+#### Для обычного использования:
+
 ```bash
 # .env файл
 EVOLUTION_KEY_ID=your_key_id_here
 EVOLUTION_SECRET=your_secret_here
 EVOLUTION_BASE_URL=https://your-model-endpoint.cloud.ru/v1
+EVOLUTION_TOKEN_URL=https://iam.api.cloud.ru/api/v1/auth/token
+ENABLE_INTEGRATION_TESTS=false
+LOG_LEVEL=INFO
+```
+
+#### Для Evolution Foundation Models:
+
+```bash
+# .env файл для Foundation Models
+EVOLUTION_KEY_ID=your_key_id_here
+EVOLUTION_SECRET=your_secret_here
+EVOLUTION_BASE_URL=https://foundation-models.api.cloud.ru/api/gigacube/openai/v1
+EVOLUTION_PROJECT_ID=your_project_id_here  # Обязательно для Foundation Models
 EVOLUTION_TOKEN_URL=https://iam.api.cloud.ru/api/v1/auth/token
 ENABLE_INTEGRATION_TESTS=false
 LOG_LEVEL=INFO
@@ -140,6 +226,7 @@ client = OpenAI(
     key_id=os.getenv("EVOLUTION_KEY_ID"),
     secret=os.getenv("EVOLUTION_SECRET"),
     base_url=os.getenv("EVOLUTION_BASE_URL"),
+    project_id=os.getenv("EVOLUTION_PROJECT_ID"),  # Опционально для Foundation Models
 )
 ```
 
@@ -180,29 +267,11 @@ with client:
     response = client.chat.completions.create(...)
 ```
 
-## 🔍 Управление токенами
-
-```python
-# Получить информацию о токене
-token_info = client.get_token_info()
-print(token_info)
-# {
-#   "has_token": true,
-#   "expires_at": "2024-01-01T12:00:00",
-#   "is_valid": true,
-#   "buffer_seconds": 30
-# }
-
-# Принудительно обновить токен
-new_token = client.refresh_token()
-
-# Получить текущий токен
-current_token = client.current_token
-```
 
 ## 📚 Документация
 
 - [API Documentation](https://cloud-ru-tech.github.io/evolution-openai-python)
+- [Evolution Foundation Models Guide](https://cloud-ru-tech.github.io/evolution-openai-python/foundation_models)
 - [Migration Guide](https://cloud-ru-tech.github.io/evolution-openai-python/migration)
 - [Examples](examples/)
 - [Changelog](CHANGELOG.md)

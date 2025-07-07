@@ -21,6 +21,21 @@ MD_PYCON_RE = re.compile(
     r"(?P<after>^(?P=indent)```.*$)",
     re.DOTALL | re.MULTILINE,
 )
+
+# RST code block patterns
+RST_RE = re.compile(
+    r"(?P<before>^(?P<indent> *)\.\. code-block:: python\n)"
+    r"(?P<code>.*?)"
+    r"(?P<after>^(?P=indent)\n)",
+    re.DOTALL | re.MULTILINE,
+)
+RST_PYCON_RE = re.compile(
+    r"(?P<before>^(?P<indent> *)\.\. code-block:: pycon\n)"
+    r"(?P<code>.*?)"
+    r"(?P<after>^(?P=indent)\n)",
+    re.DOTALL | re.MULTILINE,
+)
+
 PYCON_PREFIX = ">>> "
 PYCON_CONTINUATION_PREFIX = "..."
 PYCON_CONTINUATION_RE = re.compile(
@@ -103,8 +118,26 @@ def format_str(
         code = textwrap.indent(code, match["indent"])
         return f"{match['before']}{code}{match['after']}"
 
+    def _rst_match(match: Match[str]) -> str:
+        code = textwrap.dedent(match["code"])
+        with _collect_error(match):
+            code = format_code_block(code)
+        code = textwrap.indent(code, match["indent"])
+        return f"{match['before']}{code}{match['after']}"
+
+    def _rst_pycon_match(match: Match[str]) -> str:
+        code = _pycon_match(match)
+        code = textwrap.indent(code, match["indent"])
+        return f"{match['before']}{code}{match['after']}"
+
+    # Process Markdown files
     src = MD_RE.sub(_md_match, src)
     src = MD_PYCON_RE.sub(_md_pycon_match, src)
+
+    # Process RST files
+    src = RST_RE.sub(_rst_match, src)
+    src = RST_PYCON_RE.sub(_rst_pycon_match, src)
+
     return src, errors
 
 
