@@ -3,6 +3,12 @@
 [![PyPI version](https://badge.fury.io/py/evolution-openai.svg)](https://badge.fury.io/py/evolution-openai)
 [![Coverage](https://cloud-ru-tech.github.io/evolution-openai-python/badges/coverage.svg)](https://github.com/cloud-ru-tech/evolution-openai-python/actions)
 
+[![CI](https://github.com/cloud-ru-tech/evolution-openai-python/workflows/CI/badge.svg)](https://github.com/cloud-ru-tech/evolution-openai-python/actions/workflows/ci.yml)
+[![Python Compatibility](https://github.com/cloud-ru-tech/evolution-openai-python/workflows/Python%20Compatibility%20Check/badge.svg)](https://github.com/cloud-ru-tech/evolution-openai-python/actions/workflows/compatibility-check.yml)
+[![Windows Tests](https://github.com/cloud-ru-tech/evolution-openai-python/workflows/Windows%20Tests/badge.svg)](https://github.com/cloud-ru-tech/evolution-openai-python/actions/workflows/windows-test.yml)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Platforms](https://img.shields.io/badge/platforms-Linux%20%7C%20macOS%20%7C%20Windows-green.svg)](https://github.com/cloud-ru-tech/evolution-openai-python/actions)
+
 **Полностью совместимый** Evolution OpenAI client с автоматическим управлением токенами. Просто замените `OpenAI` на `EvolutionOpenAI` и все будет работать!
 
 ## 🎯 Особенности
