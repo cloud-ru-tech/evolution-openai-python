@@ -1,0 +1,105 @@
+name: Test Status Summary
+
+# Этот workflow запускается после завершения основных тестов
+on:
+  workflow_run:
+    workflows: ["CI", "Python Compatibility Check", "Windows Tests"]
+    types:
+      - completed
+
+jobs:
+  test-status:
+    runs-on: ubuntu-latest
+    name: Test Status Summary
+    
+    steps:
+      - name: Check CI Status
+        run: |
+          echo "## 🧪 Test Status Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
+            echo "✅ **${{ github.event.workflow_run.name }}** - Passed" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ github.event.workflow_run.conclusion }}" == "failure" ]; then
+            echo "❌ **${{ github.event.workflow_run.name }}** - Failed" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **${{ github.event.workflow_run.name }}** - ${{ github.event.workflow_run.conclusion }}" >> $GITHUB_STEP_SUMMARY
+          fi
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow:** ${{ github.event.workflow_run.name }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Event:** ${{ github.event.workflow_run.event }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** ${{ github.event.workflow_run.head_branch }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Commit:** ${{ github.event.workflow_run.head_sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Run ID:** ${{ github.event.workflow_run.id }}" >> $GITHUB_STEP_SUMMARY
+          
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### 🔗 Links" >> $GITHUB_STEP_SUMMARY
+          echo "- [View Run](${{ github.event.workflow_run.html_url }})" >> $GITHUB_STEP_SUMMARY
+          echo "- [Repository](https://github.com/${{ github.repository }})" >> $GITHUB_STEP_SUMMARY
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    name: Notify on Failure
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    
+    steps:
+      - name: Create Issue on Failure
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Создаем issue только для основной ветки
+            if (context.payload.workflow_run.head_branch !== 'main') {
+              console.log('Skipping issue creation for non-main branch');
+              return;
+            }
+            
+            const title = `🚨 Test Failure: ${context.payload.workflow_run.name}`;
+            const body = `
+            ## Test Failure Report
+            
+            **Workflow:** ${context.payload.workflow_run.name}
+            **Branch:** ${context.payload.workflow_run.head_branch}
+            **Commit:** ${context.payload.workflow_run.head_sha}
+            **Run ID:** ${context.payload.workflow_run.id}
+            
+            ### Details
+            - **Event:** ${context.payload.workflow_run.event}
+            - **Status:** ${context.payload.workflow_run.conclusion}
+            - **Run URL:** ${context.payload.workflow_run.html_url}
+            
+            ### Actions Required
+            - [ ] Investigate the failing tests
+            - [ ] Fix the issues
+            - [ ] Verify the fix works across all Python versions and OS
+            - [ ] Close this issue when resolved
+            
+            ---
+            *This issue was automatically created by the Test Status workflow.*
+            `;
+            
+            // Проверяем, есть ли уже открытый issue для этого workflow
+            const existingIssues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'automated-test-failure',
+              per_page: 100
+            });
+            
+            const existingIssue = existingIssues.data.find(issue => 
+              issue.title.includes(context.payload.workflow_run.name)
+            );
+            
+            if (!existingIssue) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['automated-test-failure', 'bug', 'ci']
+              });
+              console.log('Created issue for test failure');
+            } else {
+              console.log('Issue already exists for this workflow failure');
+            } 
