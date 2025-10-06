@@ -11,9 +11,9 @@
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -164,7 +164,7 @@ Context Manager
 
 .. code-block:: python
 
-   with OpenAI(
+   with EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -202,7 +202,7 @@ create_client()
 
 .. code-block:: python
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1",
@@ -214,7 +214,7 @@ create_client()
 
 .. code-block:: python
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1",
@@ -226,7 +226,7 @@ create_client()
 
 .. code-block:: python
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1",

@@ -21,7 +21,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Миграция с OpenAI SDK" href="migration.html" />
-    <link rel="prev" title="Evolution Foundation Models" href="foundation_models.html" /> 
+    <link rel="prev" title="Streaming API" href="streaming.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,7 +51,6 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
 <li class="toctree-l1"><a class="reference internal" href="async_usage.html">Асинхронное использование</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="foundation_models.html">Evolution Foundation Models</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Обработка ошибок</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#id2">Типы ошибок</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#id3">Иерархия исключений</a></li>
@@ -149,10 +148,10 @@
 <h2>Базовая обработка ошибок<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h2>
 <section id="try-except">
 <h3>Простой try-except<a class="headerlink" href="#try-except" title="Permalink to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAIError</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
     <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
     <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -677,7 +676,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="foundation_models.html" class="btn btn-neutral float-left" title="Evolution Foundation Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="streaming.html" class="btn btn-neutral float-left" title="Streaming API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="migration.html" class="btn btn-neutral float-right" title="Миграция с OpenAI SDK" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -20,7 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Evolution Foundation Models" href="foundation_models.html" />
+    <link rel="next" title="Обработка ошибок" href="error_handling.html" />
     <link rel="prev" title="Асинхронное использование" href="async_usage.html" /> 
 </head>
 
@@ -86,7 +86,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#id13">Советы по оптимизации</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="foundation_models.html">Evolution Foundation Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Миграция с OpenAI SDK</a></li>
 </ul>
@@ -136,9 +135,9 @@
 <h2>Базовое использование<a class="headerlink" href="#id1" title="Permalink to this heading"></a></h2>
 <section id="id2">
 <h3>Синхронный streaming<a class="headerlink" href="#id2" title="Permalink to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
     <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
     <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -166,10 +165,10 @@
 <section id="id3">
 <h3>Асинхронный streaming<a class="headerlink" href="#id3" title="Permalink to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">AsyncOpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionAsyncOpenAI</span>
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">async_streaming</span><span class="p">():</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">EvolutionAsyncOpenAI</span><span class="p">(</span>
         <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
         <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
         <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -441,7 +440,7 @@
 
     <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">():</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+            <span class="k">async</span> <span class="k">with</span> <span class="n">EvolutionAsyncOpenAI</span><span class="p">(</span>
                 <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
                 <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
                 <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -585,7 +584,7 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">asyncio</span>
 
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">multiple_streams</span><span class="p">():</span>
-    <span class="k">async</span> <span class="k">with</span> <span class="n">AsyncOpenAI</span><span class="p">(</span>
+    <span class="k">async</span> <span class="k">with</span> <span class="n">EvolutionAsyncOpenAI</span><span class="p">(</span>
         <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
         <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
         <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -717,7 +716,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="async_usage.html" class="btn btn-neutral float-left" title="Асинхронное использование" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="foundation_models.html" class="btn btn-neutral float-right" title="Evolution Foundation Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="error_handling.html" class="btn btn-neutral float-right" title="Обработка ошибок" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

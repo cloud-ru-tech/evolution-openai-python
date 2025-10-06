@@ -50,7 +50,6 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
 <li class="toctree-l1"><a class="reference internal" href="async_usage.html">Асинхронное использование</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="foundation_models.html">Evolution Foundation Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Миграция с OpenAI SDK</a></li>
 </ul>
@@ -108,9 +107,9 @@
 </section>
 <section id="id4">
 <h3>Основное использование<a class="headerlink" href="#id4" title="Permalink to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_EVOLUTION_key_id&quot;</span><span class="p">,</span>
     <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_EVOLUTION_secret&quot;</span><span class="p">,</span>
     <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-model-endpoint.cloud.ru/v1&quot;</span>
@@ -196,18 +195,6 @@
 <li class="toctree-l2"><a class="reference internal" href="streaming.html#id9">Streaming в веб-приложениях</a></li>
 <li class="toctree-l2"><a class="reference internal" href="streaming.html#id10">Паттерны и лучшие практики</a></li>
 <li class="toctree-l2"><a class="reference internal" href="streaming.html#id13">Советы по оптимизации</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="foundation_models.html">Evolution Foundation Models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#foundation-models">Особенности Foundation Models</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id1">Быстрый старт</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id4">Доступные модели</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id5">Параметры конфигурации</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id6">Примеры использования</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id10">Управление токенами</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id13">Обработка ошибок</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id17">Лучшие практики</a></li>
-<li class="toctree-l2"><a class="reference internal" href="foundation_models.html#id22">Устранение неполадок</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a><ul>

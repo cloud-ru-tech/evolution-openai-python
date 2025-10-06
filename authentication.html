@@ -82,7 +82,6 @@
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Использование</a></li>
 <li class="toctree-l1"><a class="reference internal" href="async_usage.html">Асинхронное использование</a></li>
 <li class="toctree-l1"><a class="reference internal" href="streaming.html">Streaming API</a></li>
-<li class="toctree-l1"><a class="reference internal" href="foundation_models.html">Evolution Foundation Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="error_handling.html">Обработка ошибок</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migration.html">Миграция с OpenAI SDK</a></li>
 </ul>
@@ -142,9 +141,9 @@
 <p class="admonition-title">Warning</p>
 <p>Не рекомендуется для продакшена! Используйте только для тестирования.</p>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id_here&quot;</span><span class="p">,</span>
     <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret_here&quot;</span><span class="p">,</span>
     <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -161,9 +160,9 @@
 </pre></div>
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
     <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
     <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
@@ -182,11 +181,11 @@
 </div>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 
 <span class="n">load_dotenv</span><span class="p">()</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_KEY_ID&quot;</span><span class="p">),</span>
     <span class="n">secret</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_SECRET&quot;</span><span class="p">),</span>
     <span class="n">base_url</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;EVOLUTION_BASE_URL&quot;</span><span class="p">)</span>
@@ -277,9 +276,9 @@ credentials.json
 <span class="c1"># Включить отладочные логи</span>
 <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">evolution_openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">EvolutionOpenAI</span>
 
-<span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
     <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
     <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span>
@@ -337,7 +336,7 @@ credentials.json
 </pre></div>
 </div>
 <p><strong>Решение:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">client</span> <span class="o">=</span> <span class="n">EvolutionOpenAI</span><span class="p">(</span>
     <span class="n">key_id</span><span class="o">=</span><span class="s2">&quot;your_key_id&quot;</span><span class="p">,</span>
     <span class="n">secret</span><span class="o">=</span><span class="s2">&quot;your_secret&quot;</span><span class="p">,</span>
     <span class="n">base_url</span><span class="o">=</span><span class="s2">&quot;https://your-endpoint.cloud.ru/v1&quot;</span><span class="p">,</span>
