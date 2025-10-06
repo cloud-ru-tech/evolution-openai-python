@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from evolution_openai import OpenAI, AsyncOpenAI
+from evolution_openai import EvolutionOpenAI, EvolutionAsyncOpenAI
 
 
 @pytest.mark.unit
@@ -14,40 +14,38 @@ class TestHeaderManagement:
     """Test header management functionality"""
 
     @patch("evolution_openai.client.EvolutionTokenManager")
-    def test_prepare_default_headers_with_project_id(
+    def test_prepare_default_headers_custom_merge(
         self, mock_token_manager, mock_credentials
     ):
-        """Test _prepare_default_headers with project_id"""
+        """No extra project header is added to headers"""
         mock_manager = MagicMock()
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
-            project_id="test_project_123",
             default_headers={"Custom-Header": "custom_value"},
         )
 
-        assert client.project_id == "test_project_123"
         # Check that headers are properly prepared
         headers = client._prepare_default_headers(
             {"User-Header": "user_value"}
         )
         assert headers["User-Header"] == "user_value"
-        assert headers["x-project-id"] == "test_project_123"
+        assert "x-project-id" not in headers
 
     @patch("evolution_openai.client.EvolutionTokenManager")
-    def test_prepare_default_headers_without_project_id(
+    def test_prepare_default_headers_without_extra_header(
         self, mock_token_manager, mock_credentials
     ):
-        """Test _prepare_default_headers without project_id"""
+        """Test _prepare_default_headers without extra project header"""
         mock_manager = MagicMock()
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -68,11 +66,10 @@ class TestHeaderManagement:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
-            project_id="test_project",
         )
 
         # Mock various header sources
@@ -90,21 +87,17 @@ class TestHeaderManagement:
             mock_http_client._auth_headers["Authorization"]
             == "Bearer new_token"
         )
-        assert mock_http_client._auth_headers["x-project-id"] == "test_project"
+        assert "x-project-id" not in mock_http_client._auth_headers
         assert (
             mock_http_client.default_headers["Authorization"]
             == "Bearer new_token"
         )
-        assert (
-            mock_http_client.default_headers["x-project-id"] == "test_project"
-        )
+        assert "x-project-id" not in mock_http_client.default_headers
         assert (
             mock_http_client._default_headers["Authorization"]
             == "Bearer new_token"
         )
-        assert (
-            mock_http_client._default_headers["x-project-id"] == "test_project"
-        )
+        assert "x-project-id" not in mock_http_client._default_headers
 
     @patch("evolution_openai.client.EvolutionTokenManager")
     def test_update_auth_headers_no_header_sources(
@@ -115,7 +108,7 @@ class TestHeaderManagement:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -139,7 +132,7 @@ class TestHeaderManagement:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -176,7 +169,7 @@ class TestAuthErrorDetection:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -189,6 +182,11 @@ class TestAuthErrorDetection:
             Exception("403 Forbidden"),
             Exception("UNAUTHORIZED access"),
             Exception("Authentication error occurred"),
+            # New: expired token/JWT messages
+            Exception("Jwt is expired"),
+            Exception("JWT expired"),
+            Exception("token is expired"),
+            Exception("Expired token"),
         ]
 
         for error in auth_errors:
@@ -219,7 +217,7 @@ class TestHTTPClientPatching:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -248,7 +246,7 @@ class TestHTTPClientPatching:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -271,7 +269,7 @@ class TestHTTPClientPatching:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -309,7 +307,7 @@ class TestHTTPClientPatching:
         ]
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -338,6 +336,43 @@ class TestHTTPClientPatching:
         mock_manager.invalidate_token.assert_called_once()
 
     @patch("evolution_openai.client.EvolutionTokenManager")
+    def test_patched_request_expired_jwt_retry(
+        self, mock_token_manager, mock_credentials
+    ):
+        """Retry should also trigger on 'Jwt is expired' errors"""
+        mock_manager = MagicMock()
+        mock_manager.get_valid_token.side_effect = [
+            "test_token",
+            "test_token",
+            "new_token",
+            "new_token",
+        ]
+        mock_token_manager.return_value = mock_manager
+
+        client = EvolutionOpenAI(
+            key_id=mock_credentials["key_id"],
+            secret=mock_credentials["secret"],
+            base_url=mock_credentials["base_url"],
+        )
+
+        mock_http_client = MagicMock()
+        original_request = MagicMock()
+        original_request.side_effect = [
+            Exception("Jwt is expired"),
+            "success",
+        ]
+        mock_http_client.request = original_request
+        client._client = mock_http_client
+
+        client._patch_client()
+
+        result = mock_http_client.request("arg1", kwarg1="value1")
+
+        assert result == "success"
+        assert original_request.call_count == 2
+        mock_manager.invalidate_token.assert_called_once()
+
+    @patch("evolution_openai.client.EvolutionTokenManager")
     def test_patched_request_non_auth_error(
         self, mock_token_manager, mock_credentials
     ):
@@ -346,7 +381,7 @@ class TestHTTPClientPatching:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -384,7 +419,7 @@ class TestAsyncHTTPClientPatching:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -413,7 +448,7 @@ class TestAsyncHTTPClientPatching:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -451,7 +486,7 @@ class TestAsyncHTTPClientPatching:
         ]
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -475,6 +510,43 @@ class TestAsyncHTTPClientPatching:
         result = await mock_http_client.request("arg1", kwarg1="value1")
 
         # Verify retry logic
+        assert result == "success"
+        assert original_request.call_count == 2
+        mock_manager.invalidate_token.assert_called_once()
+
+    @patch("evolution_openai.client.EvolutionTokenManager")
+    async def test_patched_async_request_expired_jwt_retry(
+        self, mock_token_manager, mock_credentials
+    ):
+        """Async retry should trigger on 'Jwt is expired' errors"""
+        mock_manager = MagicMock()
+        mock_manager.get_valid_token.side_effect = [
+            "test_token",
+            "test_token",
+            "new_token",
+            "new_token",
+        ]
+        mock_token_manager.return_value = mock_manager
+
+        client = EvolutionAsyncOpenAI(
+            key_id=mock_credentials["key_id"],
+            secret=mock_credentials["secret"],
+            base_url=mock_credentials["base_url"],
+        )
+
+        mock_http_client = MagicMock()
+        original_request = AsyncMock()
+        original_request.side_effect = [
+            Exception("Jwt is expired"),
+            "success",
+        ]
+        mock_http_client.request = original_request
+        client._client = mock_http_client
+
+        client._patch_async_client()
+
+        result = await mock_http_client.request("arg1", kwarg1="value1")
+
         assert result == "success"
         assert original_request.call_count == 2
         mock_manager.invalidate_token.assert_called_once()
@@ -522,7 +594,7 @@ class TestContextManagers:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -625,7 +697,7 @@ class TestWithOptionsMethod:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -655,11 +727,10 @@ class TestWithOptionsMethod:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
-            project_id="test_project",
         )
 
         # Create new client with different options
@@ -668,7 +739,6 @@ class TestWithOptionsMethod:
         # Verify credentials are preserved
         assert new_client.key_id == mock_credentials["key_id"]
         assert new_client.secret == mock_credentials["secret"]
-        assert new_client.project_id == "test_project"
 
     @patch("evolution_openai.client.EvolutionTokenManager")
     def test_async_with_options_creates_new_client(
@@ -679,7 +749,7 @@ class TestWithOptionsMethod:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -714,7 +784,7 @@ class TestInitializationMethods:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -744,7 +814,7 @@ class TestInitializationMethods:
         mock_manager.get_valid_token.side_effect = ["test_token", None, None]
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -767,16 +837,14 @@ class TestEdgeCases:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
-            project_id=None,
             default_headers=None,
             timeout=None,
         )
 
-        assert client.project_id is None
         assert client.timeout is None
 
     @patch("evolution_openai.client.EvolutionTokenManager")
@@ -789,7 +857,7 @@ class TestEdgeCases:
         mock_manager.get_valid_token.side_effect = ["test_token", None, None]
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -807,7 +875,7 @@ class TestEdgeCases:
         mock_manager.get_valid_token.side_effect = ["test_token", None, None]
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -826,7 +894,7 @@ class TestEdgeCases:
         mock_manager.get_valid_token.return_value = ""
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -843,7 +911,7 @@ class TestEdgeCases:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],

@@ -9,7 +9,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from evolution_openai import OpenAI
+from evolution_openai import EvolutionOpenAI
 
 try:
     import openai
@@ -58,7 +58,7 @@ class TestVersionCompatibility:
         mock_openai_instance.api_key = "test_token"
 
         # Создаем клиент
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -119,7 +119,7 @@ class TestVersionCompatibility:
         mock_openai_instance._client = MagicMock()
         mock_openai_instance.api_key = "test_token"
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -169,7 +169,7 @@ class TestVersionCompatibility:
         mock_openai_instance._client = MagicMock()
         mock_openai_instance.api_key = "test_token"
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -225,7 +225,7 @@ class TestBackwardCompatibility:
         mock_openai_instance._client = MagicMock()
         mock_openai_instance.api_key = "test_token"
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -273,7 +273,7 @@ class TestBackwardCompatibility:
         mock_openai_instance._client = MagicMock()
         mock_openai_instance.api_key = "test_token"
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -320,7 +320,7 @@ class TestForwardCompatibility:
         mock_http_client = MagicMock()
         mock_openai_instance._client = mock_http_client
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -465,7 +465,7 @@ class TestParameterDefaultsCompatibility:
         mock_openai_instance._client = MagicMock()
         mock_openai_instance.api_key = "test_token"
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],

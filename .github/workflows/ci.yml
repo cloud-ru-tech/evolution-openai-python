@@ -199,11 +199,3 @@ jobs:
           EVOLUTION_SECRET: ${{ secrets.EVOLUTION_SECRET }}
           EVOLUTION_BASE_URL: ${{ secrets.EVOLUTION_BASE_URL }}
         run: make run-tokens
-
-      - name: Run foundation models examples
-        env:
-          EVOLUTION_KEY_ID: ${{ secrets.EVOLUTION_KEY_ID }}
-          EVOLUTION_SECRET: ${{ secrets.EVOLUTION_SECRET }}
-          EVOLUTION_BASE_URL: ${{ secrets.EVOLUTION_BASE_URL }}
-          EVOLUTION_PROJECT_ID: ${{ secrets.EVOLUTION_PROJECT_ID }}
-        run: make run-foundation-models

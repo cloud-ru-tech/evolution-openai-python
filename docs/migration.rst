@@ -59,7 +59,7 @@ Evolution OpenAI **полностью совместим** с официальн
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI, AsyncOpenAI
+   from evolution_openai import EvolutionOpenAI, EvolutionAsyncOpenAI
 
 Шаг 3: Обновление аутентификации
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -76,7 +76,7 @@ Evolution OpenAI **полностью совместим** с официальн
 
 .. code-block:: python
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_EVOLUTION_key_id",
        secret="your_EVOLUTION_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -132,10 +132,10 @@ Evolution OpenAI **полностью совместим** с официальн
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
    import os
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id=os.getenv("EVOLUTION_KEY_ID"),
        secret=os.getenv("EVOLUTION_SECRET"),
        base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -181,10 +181,10 @@ Evolution OpenAI **полностью совместим** с официальн
 .. code-block:: python
 
    import asyncio
-   from evolution_openai import AsyncOpenAI
+   from evolution_openai import EvolutionAsyncOpenAI
 
    async def main():
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -224,9 +224,9 @@ Streaming
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -263,7 +263,7 @@ Streaming
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
    from evolution_openai.exceptions import EvolutionOpenAIError, RateLimitError
 
    try:
@@ -504,7 +504,7 @@ Kubernetes
    def test_connection():
        """Тестирует подключение к Evolution API"""
        try:
-           client = OpenAI(
+           client = EvolutionOpenAI(
                key_id=os.getenv("EVOLUTION_KEY_ID"),
                secret=os.getenv("EVOLUTION_SECRET"),
                base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -527,7 +527,7 @@ Kubernetes
    def test_models():
        """Тестирует получение списка моделей"""
        try:
-           client = OpenAI(
+           client = EvolutionOpenAI(
                key_id=os.getenv("EVOLUTION_KEY_ID"),
                secret=os.getenv("EVOLUTION_SECRET"),
                base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -592,7 +592,7 @@ Kubernetes
 
    # Замените все импорты
    # from openai import OpenAI
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
 Проблема: "Invalid credentials"
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

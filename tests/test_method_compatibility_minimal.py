@@ -34,9 +34,9 @@ class TestChatCompletionsMethodMinimal:
         # Мокаем HTTP клиент
         mock_openai_instance._client = MagicMock()
 
-        from evolution_openai import OpenAI
+        from evolution_openai import EvolutionOpenAI
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -75,9 +75,9 @@ class TestChatCompletionsMethodMinimal:
         # Мокаем HTTP клиент
         mock_openai_instance._client = MagicMock()
 
-        from evolution_openai import OpenAI
+        from evolution_openai import EvolutionOpenAI
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],

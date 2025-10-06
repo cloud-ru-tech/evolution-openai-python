@@ -36,10 +36,10 @@
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
    # Инициализация клиента
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -79,9 +79,9 @@
 .. code-block:: python
 
    import os
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id=os.getenv("EVOLUTION_KEY_ID"),
        secret=os.getenv("EVOLUTION_SECRET"),
        base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -100,11 +100,11 @@
 
    from dotenv import load_dotenv
    import os
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
    load_dotenv()
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id=os.getenv("EVOLUTION_KEY_ID"),
        secret=os.getenv("EVOLUTION_SECRET"),
        base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -134,10 +134,10 @@ Streaming
 .. code-block:: python
 
    import asyncio
-   from evolution_openai import AsyncOpenAI
+   from evolution_openai import EvolutionAsyncOpenAI
 
    async def main():
-       client = AsyncOpenAI(
+       client = EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -157,10 +157,10 @@ Streaming
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
    from evolution_openai.exceptions import EvolutionOpenAIError
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"

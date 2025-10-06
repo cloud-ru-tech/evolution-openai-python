@@ -12,10 +12,10 @@ Evolution OpenAI полностью поддерживает асинхронн�
 .. code-block:: python
 
    import asyncio
-   from evolution_openai import AsyncOpenAI
+   from evolution_openai import EvolutionAsyncOpenAI
 
    async def main():
-       client = AsyncOpenAI(
+       client = EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -33,7 +33,7 @@ Evolution OpenAI полностью поддерживает асинхронн�
 .. code-block:: python
 
    async def simple_request():
-       client = AsyncOpenAI(
+       client = EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret", 
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -59,7 +59,7 @@ Context Manager
 .. code-block:: python
 
    async def with_context_manager():
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -83,7 +83,7 @@ Context Manager
 .. code-block:: python
 
    async def parallel_requests():
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -127,7 +127,7 @@ Context Manager
                print(f"Запрос {index} завершен")
                return response.choices[0].message.content
        
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -154,7 +154,7 @@ Context Manager
 .. code-block:: python
 
    async def async_streaming():
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -186,7 +186,7 @@ Try-except с async
 
    async def error_handling_example():
        try:
-           async with AsyncOpenAI(
+           async with EvolutionAsyncOpenAI(
                key_id="your_key_id",
                secret="your_secret",
                base_url="https://your-endpoint.cloud.ru/v1"
@@ -218,7 +218,7 @@ Graceful shutdown
            self.running = True
        
        async def start(self):
-           self.client = AsyncOpenAI(
+           self.client = EvolutionAsyncOpenAI(
                key_id="your_key_id",
                secret="your_secret",
                base_url="https://your-endpoint.cloud.ru/v1"
@@ -265,7 +265,7 @@ Graceful shutdown
        
        async def __aenter__(self):
            for i in range(self.pool_size):
-               client = AsyncOpenAI(
+               client = EvolutionAsyncOpenAI(
                    key_id="your_key_id",
                    secret="your_secret",
                    base_url="https://your-endpoint.cloud.ru/v1"
@@ -331,7 +331,7 @@ Graceful shutdown
        # Создаем очередь и клиент
        queue = asyncio.Queue(maxsize=20)
        
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -375,7 +375,7 @@ FastAPI пример
 
    from fastapi import FastAPI
    from pydantic import BaseModel
-   from evolution_openai import AsyncOpenAI
+   from evolution_openai import EvolutionAsyncOpenAI
 
    app = FastAPI()
 
@@ -392,7 +392,7 @@ FastAPI пример
    @app.on_event("startup")
    async def startup_event():
        global client
-       client = AsyncOpenAI(
+       client = EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -422,7 +422,7 @@ aiohttp пример
 .. code-block:: python
 
    from aiohttp import web
-   from evolution_openai import AsyncOpenAI
+   from evolution_openai import EvolutionAsyncOpenAI
 
    async def chat_handler(request):
        data = await request.json()
@@ -444,7 +444,7 @@ aiohttp пример
        app = web.Application()
        
        # Инициализация клиента
-       app['openai_client'] = AsyncOpenAI(
+       app['openai_client'] = EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"

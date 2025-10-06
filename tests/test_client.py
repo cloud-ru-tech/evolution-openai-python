@@ -7,8 +7,8 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from evolution_openai import (
-    OpenAI,
-    AsyncOpenAI,
+    EvolutionOpenAI,
+    EvolutionAsyncOpenAI,
     create_client,
     create_async_client,
 )
@@ -27,7 +27,7 @@ class TestEvolutionOpenAI:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -48,7 +48,7 @@ class TestEvolutionOpenAI:
         }
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -84,7 +84,7 @@ class TestEvolutionAsyncOpenAI:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -150,7 +150,7 @@ class TestErrorHandling:
         """Test behavior when OpenAI SDK is not installed"""
         with patch("evolution_openai.client.OPENAI_AVAILABLE", False):
             with pytest.raises(ImportError) as exc_info:
-                OpenAI(
+                EvolutionOpenAI(
                     key_id=mock_credentials["key_id"],
                     secret=mock_credentials["secret"],
                     base_url=mock_credentials["base_url"],
@@ -168,7 +168,7 @@ class TestErrorHandling:
         mock_token_manager.return_value = mock_manager
 
         with pytest.raises(EvolutionAuthError):
-            OpenAI(
+            EvolutionOpenAI(
                 key_id=mock_credentials["key_id"],
                 secret=mock_credentials["secret"],
                 base_url=mock_credentials["base_url"],

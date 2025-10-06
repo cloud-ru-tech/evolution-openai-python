@@ -30,9 +30,9 @@ Evolution OpenAI использует систему аутентификаци�
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id_here",
        secret="your_secret_here",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -52,9 +52,9 @@ Evolution OpenAI использует систему аутентификаци�
 .. code-block:: python
 
    import os
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id=os.getenv("EVOLUTION_KEY_ID"),
        secret=os.getenv("EVOLUTION_SECRET"),
        base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -76,11 +76,11 @@ Evolution OpenAI использует систему аутентификаци�
 
    from dotenv import load_dotenv
    import os
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
    load_dotenv()
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id=os.getenv("EVOLUTION_KEY_ID"),
        secret=os.getenv("EVOLUTION_SECRET"),
        base_url=os.getenv("EVOLUTION_BASE_URL")
@@ -173,9 +173,9 @@ SDK автоматически управляет токенами доступ�
    # Включить отладочные логи
    logging.basicConfig(level=logging.DEBUG)
    
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
    
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -243,7 +243,7 @@ SDK автоматически управляет токенами доступ�
 
 .. code-block:: python
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1",
