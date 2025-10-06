@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.0.4 (2025-10-06)
+
+### Bug Fixes
+
+- Refactor workflow with async token renew
+  ([#4](https://github.com/cloud-ru-tech/evolution-openai-python/pull/4),
+  [`c8b68b9`](https://github.com/cloud-ru-tech/evolution-openai-python/commit/c8b68b9e576fa21bce8e07bf65480ff9b6934b7b))
+
+- Workflow with async token renew
+  ([#4](https://github.com/cloud-ru-tech/evolution-openai-python/pull/4),
+  [`c8b68b9`](https://github.com/cloud-ru-tech/evolution-openai-python/commit/c8b68b9e576fa21bce8e07bf65480ff9b6934b7b))
+
+
 ## v1.0.3 (2025-07-07)
 
 ### Bug Fixes
