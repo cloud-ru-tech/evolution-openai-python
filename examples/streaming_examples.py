@@ -7,7 +7,7 @@ import os
 import time
 import asyncio
 
-from evolution_openai import OpenAI, AsyncOpenAI
+from evolution_openai import EvolutionOpenAI, EvolutionAsyncOpenAI
 
 # Конфигурация
 BASE_URL = os.getenv("EVOLUTION_BASE_URL", "https://your-endpoint.cloud.ru/v1")
@@ -56,7 +56,9 @@ def basic_streaming_example():
         return
 
     try:
-        with OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 
@@ -100,7 +102,9 @@ def streaming_with_metadata():
         return
 
     try:
-        with OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 
@@ -160,7 +164,7 @@ async def async_streaming_example():
         return
 
     try:
-        async with AsyncOpenAI(
+        async with EvolutionAsyncOpenAI(
             key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
         ) as client:
             # Получаем доступную модель
@@ -211,7 +215,9 @@ def streaming_with_stop_sequence():
         return
 
     try:
-        client = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = get_available_model(client)
@@ -276,7 +282,9 @@ def multiple_streaming_conversations():
     ]
 
     try:
-        client = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = get_available_model(client)

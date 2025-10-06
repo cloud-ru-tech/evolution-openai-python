@@ -22,25 +22,25 @@ babel==2.17.0
 backports-tarfile==1.2.0
     # via jaraco-context
 build==1.2.2.post1
-certifi==2025.6.15
+certifi==2025.10.5
     # via httpcore
     # via httpx
     # via requests
 cfgv==3.4.0
     # via pre-commit
-charset-normalizer==3.4.2
+charset-normalizer==3.4.3
     # via requests
 click==8.1.8
     # via click-option-group
     # via python-semantic-release
-click-option-group==0.5.7
+click-option-group==0.5.8
     # via python-semantic-release
 coverage==7.6.1
     # via pytest-cov
 deprecated==1.2.18
     # via python-semantic-release
 dirty-equals==0.9.0
-distlib==0.3.9
+distlib==0.4.0
     # via virtualenv
 distro==1.9.0
     # via openai
@@ -58,7 +58,7 @@ filelock==3.16.1
     # via virtualenv
 gitdb==4.0.12
     # via gitpython
-gitpython==3.1.44
+gitpython==3.1.45
     # via python-semantic-release
 h11==0.16.0
     # via httpcore
@@ -118,12 +118,12 @@ mypy==1.14.1
 mypy-extensions==1.1.0
     # via mypy
 myst-parser==3.0.1
-nh3==0.2.21
+nh3==0.3.0
     # via readme-renderer
 nodeenv==1.9.1
     # via pre-commit
     # via pyright
-openai==1.88.0
+openai==1.109.1
     # via evolution-openai
 packaging==25.0
     # via build
@@ -140,13 +140,13 @@ pydantic==2.10.6
     # via python-semantic-release
 pydantic-core==2.27.2
     # via pydantic
-pygments==2.19.1
+pygments==2.19.2
     # via readme-renderer
     # via rich
     # via sphinx
 pyproject-hooks==1.2.0
     # via build
-pyright==1.1.402
+pyright==1.1.406
 pytest==8.3.5
     # via pytest-asyncio
     # via pytest-cov
@@ -160,11 +160,11 @@ python-dotenv==1.0.1
     # via evolution-openai
 python-gitlab==4.13.0
     # via python-semantic-release
-python-semantic-release==10.1.0
+python-semantic-release==10.4.1
 pytz==2025.2
     # via babel
     # via dirty-equals
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via myst-parser
     # via pre-commit
     # via responses
@@ -182,13 +182,13 @@ requests==2.32.4
 requests-toolbelt==1.0.0
     # via python-gitlab
     # via twine
-responses==0.25.7
+responses==0.25.8
 rfc3986==2.0.0
     # via twine
-rich==14.0.0
+rich==14.1.0
     # via python-semantic-release
     # via twine
-ruff==0.12.0
+ruff==0.13.3
 shellingham==1.5.4
     # via python-semantic-release
 six==1.17.0
@@ -237,20 +237,21 @@ typing-extensions==4.13.2
     # via annotated-types
     # via anyio
     # via exceptiongroup
+    # via gitpython
     # via mypy
     # via openai
     # via pydantic
     # via pydantic-core
     # via pyright
-    # via rich
+    # via virtualenv
 urllib3==2.2.3
     # via requests
     # via responses
     # via twine
     # via types-requests
-virtualenv==20.31.2
+virtualenv==20.34.0
     # via pre-commit
-wrapt==1.17.2
+wrapt==1.17.3
     # via deprecated
 zipp==3.20.2
     # via importlib-metadata

@@ -34,10 +34,10 @@ Evolution OpenAI предоставляет комплексную систем�
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
    from evolution_openai.exceptions import EvolutionOpenAIError
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"

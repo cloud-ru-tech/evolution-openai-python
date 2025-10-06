@@ -21,9 +21,9 @@ Streaming позволяет:
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_key_id",
        secret="your_secret",
        base_url="https://your-endpoint.cloud.ru/v1"
@@ -52,10 +52,10 @@ Streaming позволяет:
 .. code-block:: python
 
    import asyncio
-   from evolution_openai import AsyncOpenAI
+   from evolution_openai import EvolutionAsyncOpenAI
 
    async def async_streaming():
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"
@@ -336,7 +336,7 @@ FastAPI с streaming
        
        async def generate():
            try:
-               async with AsyncOpenAI(
+               async with EvolutionAsyncOpenAI(
                    key_id="your_key_id",
                    secret="your_secret",
                    base_url="https://your-endpoint.cloud.ru/v1"
@@ -483,7 +483,7 @@ FastAPI с streaming
    import asyncio
 
    async def multiple_streams():
-       async with AsyncOpenAI(
+       async with EvolutionAsyncOpenAI(
            key_id="your_key_id",
            secret="your_secret",
            base_url="https://your-endpoint.cloud.ru/v1"

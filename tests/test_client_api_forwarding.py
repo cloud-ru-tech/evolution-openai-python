@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
-from evolution_openai import OpenAI, AsyncOpenAI
+from evolution_openai import EvolutionOpenAI, EvolutionAsyncOpenAI
 
 
 @pytest.mark.unit
@@ -22,7 +22,7 @@ class TestAPIMethodForwarding:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -59,7 +59,7 @@ class TestAPIMethodForwarding:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -88,7 +88,7 @@ class TestAPIMethodForwarding:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -117,7 +117,7 @@ class TestAPIMethodForwarding:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -154,7 +154,7 @@ class TestAPIMethodForwarding:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -191,7 +191,7 @@ class TestAPIMethodForwarding:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -225,7 +225,7 @@ class TestStreamingSupport:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -266,7 +266,7 @@ class TestStreamingSupport:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -319,7 +319,7 @@ class TestAdvancedParameterHandling:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -350,7 +350,7 @@ class TestAdvancedParameterHandling:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -381,7 +381,7 @@ class TestAdvancedParameterHandling:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -414,7 +414,7 @@ class TestAdvancedParameterHandling:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -452,7 +452,7 @@ class TestRawResponseSupport:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -495,7 +495,7 @@ class TestRawResponseSupport:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -539,7 +539,7 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url="",
@@ -556,7 +556,7 @@ class TestEdgeCaseScenarios:
         mock_token_manager.return_value = mock_manager
 
         # This should work as the client doesn't validate credentials
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id="",
             secret="",
             base_url="https://api.example.com",
@@ -574,7 +574,7 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -598,7 +598,7 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -622,7 +622,7 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -642,14 +642,14 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
         )
 
         # Should be instance of both Evolution and OpenAI classes
-        assert isinstance(client, OpenAI)
+        assert isinstance(client, EvolutionOpenAI)
         # Check that it has the expected methods
         assert hasattr(client, "current_token")
         assert hasattr(client, "refresh_token")
@@ -664,14 +664,14 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
         )
 
         # Should be instance of both Evolution and AsyncOpenAI classes
-        assert isinstance(client, AsyncOpenAI)
+        assert isinstance(client, EvolutionAsyncOpenAI)
         # Check that it has the expected methods
         assert hasattr(client, "current_token")
         assert hasattr(client, "refresh_token")

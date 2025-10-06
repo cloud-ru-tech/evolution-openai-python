@@ -43,9 +43,9 @@ Evolution OpenAI Documentation
 
 .. code-block:: python
 
-   from evolution_openai import OpenAI
+   from evolution_openai import EvolutionOpenAI
 
-   client = OpenAI(
+   client = EvolutionOpenAI(
        key_id="your_EVOLUTION_key_id",
        secret="your_EVOLUTION_secret", 
        base_url="https://your-model-endpoint.cloud.ru/v1"
@@ -74,7 +74,6 @@ Evolution OpenAI Documentation
    usage
    async_usage
    streaming
-   foundation_models
    error_handling
    migration
 

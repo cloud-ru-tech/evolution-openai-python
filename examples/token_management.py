@@ -6,7 +6,7 @@
 import os
 import time
 
-from evolution_openai import OpenAI
+from evolution_openai import EvolutionOpenAI
 
 # Конфигурация
 BASE_URL = os.getenv("EVOLUTION_BASE_URL", "https://your-endpoint.cloud.ru/v1")
@@ -39,7 +39,9 @@ def token_info_example():
         return
 
     try:
-        with OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        ) as client:
             # Получаем информацию о текущем токене
             token_info = client.get_token_info()
             print(f"Информация о токене: {token_info}")
@@ -73,7 +75,9 @@ def token_refresh_example():
         return
 
     try:
-        client = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем текущий токен
         old_token = client.current_token
@@ -115,7 +119,9 @@ def automatic_token_management():
         return
 
     try:
-        client = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         print("Делаем серию запросов...")
 
@@ -165,7 +171,9 @@ def token_expiration_simulation():
         return
 
     try:
-        client = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         print("Получаем информацию о токене...")
         token_info = client.get_token_info()
@@ -210,9 +218,13 @@ def multiple_clients_example():
 
     try:
         # Создаем два клиента с одинаковыми credentials
-        client1 = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client1 = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
-        client2 = OpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client2 = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         print("Создали два клиента...")
 

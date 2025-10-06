@@ -7,7 +7,7 @@ import os
 import asyncio
 from typing import Any, Dict
 
-from evolution_openai import AsyncOpenAI
+from evolution_openai import EvolutionAsyncOpenAI
 
 # Конфигурация
 BASE_URL = os.getenv("EVOLUTION_BASE_URL", "https://your-endpoint.cloud.ru/v1")
@@ -40,7 +40,7 @@ async def basic_async_example():
         return
 
     try:
-        async with AsyncOpenAI(
+        async with EvolutionAsyncOpenAI(
             key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
         ) as client:
             # Получаем доступную модель
@@ -73,7 +73,7 @@ async def parallel_requests_example():
         return
 
     try:
-        async with AsyncOpenAI(
+        async with EvolutionAsyncOpenAI(
             key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
         ) as client:
             # Получаем доступную модель
@@ -136,7 +136,9 @@ async def streaming_async_example():
         return
 
     try:
-        client = AsyncOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionAsyncOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = await get_available_model_async(client)
@@ -176,7 +178,7 @@ async def context_manager_example():
 
     try:
         # Используем async with для автоматического закрытия
-        async with AsyncOpenAI(
+        async with EvolutionAsyncOpenAI(
             key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
         ) as client:
             # Получаем доступную модель
@@ -207,7 +209,7 @@ async def error_handling_example():
     print("\n=== Обработка ошибок ===")
 
     try:
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=KEY_ID,
             secret=SECRET,
             base_url=BASE_URL,
@@ -245,7 +247,9 @@ async def batch_processing_example():
         # Семафор для ограничения количества одновременных запросов
         semaphore = asyncio.Semaphore(3)  # Максимум 3 одновременных запроса
 
-        client = AsyncOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionAsyncOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = await get_available_model_async(client)
