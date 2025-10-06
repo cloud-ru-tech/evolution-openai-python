@@ -40,14 +40,11 @@ from evolution_openai import EvolutionOpenAI
 
 # Для обычного использования
 client = EvolutionOpenAI(
-    key_id="your_key_id", 
-    secret="your_secret", 
-    base_url="https://your-model-endpoint.cloud.ru/v1"
+    key_id="your_key_id", secret="your_secret", base_url="https://your-model-endpoint.cloud.ru/v1"
 )
 
 response = client.chat.completions.create(
-    model="default",
-    messages=[{"role": "user", "content": "Hello!"}]
+    model="default", messages=[{"role": "user", "content": "Hello!"}]
 )
 ```
 
@@ -60,9 +57,7 @@ from evolution_openai import EvolutionOpenAI
 
 # Инициализация client для обычного использования
 client = EvolutionOpenAI(
-    key_id="your_key_id", 
-    secret="your_secret", 
-    base_url="https://your-model-endpoint.cloud.ru/v1"
+    key_id="your_key_id", secret="your_secret", base_url="https://your-model-endpoint.cloud.ru/v1"
 )
 
 # Chat Completions
@@ -85,12 +80,9 @@ print(response.choices[0].message.content)
 ```python
 # Для обычного использования
 stream = client.chat.completions.create(
-    model="default", 
-    messages=[{"role": "user", "content": "Tell me a story"}], 
-    stream=True
+    model="default", messages=[{"role": "user", "content": "Tell me a story"}], stream=True
 )
 
- 
 
 for chunk in stream:
     if chunk.choices[0].delta.content:
@@ -111,8 +103,7 @@ async def main():
         base_url="https://your-model-endpoint.cloud.ru/v1",
     )
     response = await client.chat.completions.create(
-        model="default",
-        messages=[{"role": "user", "content": "Async hello!"}]
+        model="default", messages=[{"role": "user", "content": "Async hello!"}]
     )
 
     print(response.choices[0].message.content)

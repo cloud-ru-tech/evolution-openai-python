@@ -55,7 +55,9 @@ def basic_chat_example():
 
     try:
         # Создаем client с использованием контекстного менеджера
-        with EvolutionOpenAI(key_id=key_id, secret=secret, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=key_id, secret=secret, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 
@@ -97,7 +99,9 @@ def streaming_example():
         return None
 
     try:
-        with EvolutionOpenAI(key_id=key_id, secret=secret, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=key_id, secret=secret, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 
@@ -180,7 +184,9 @@ def advanced_features_example():
         return None
 
     try:
-        with EvolutionOpenAI(key_id=key_id, secret=secret, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=key_id, secret=secret, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 

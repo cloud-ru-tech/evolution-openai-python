@@ -539,7 +539,7 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url="",
@@ -556,7 +556,7 @@ class TestEdgeCaseScenarios:
         mock_token_manager.return_value = mock_manager
 
         # This should work as the client doesn't validate credentials
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id="",
             secret="",
             base_url="https://api.example.com",
@@ -622,7 +622,7 @@ class TestEdgeCaseScenarios:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = OpenAI(
+        client = EvolutionOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],

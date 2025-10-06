@@ -136,7 +136,9 @@ async def streaming_async_example():
         return
 
     try:
-        client = EvolutionAsyncOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionAsyncOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = await get_available_model_async(client)
@@ -207,7 +209,7 @@ async def error_handling_example():
     print("\n=== Обработка ошибок ===")
 
     try:
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=KEY_ID,
             secret=SECRET,
             base_url=BASE_URL,
@@ -245,7 +247,9 @@ async def batch_processing_example():
         # Семафор для ограничения количества одновременных запросов
         semaphore = asyncio.Semaphore(3)  # Максимум 3 одновременных запроса
 
-        client = EvolutionAsyncOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionAsyncOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = await get_available_model_async(client)

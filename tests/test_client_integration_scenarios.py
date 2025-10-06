@@ -58,7 +58,7 @@ class TestOpenAIVersionCompatibility:
         """Test behavior when OpenAI is not available"""
         with patch("evolution_openai.client.OPENAI_AVAILABLE", False):
             with pytest.raises(ImportError) as exc_info:
-                OpenAI(
+                EvolutionOpenAI(
                     key_id=mock_credentials["key_id"],
                     secret=mock_credentials["secret"],
                     base_url=mock_credentials["base_url"],
@@ -75,7 +75,7 @@ class TestOpenAIVersionCompatibility:
             mock_manager.get_valid_token.return_value = "test_token"
             mock_token_manager.return_value = mock_manager
 
-            client = OpenAI(
+            client = EvolutionOpenAI(
                 key_id=mock_credentials["key_id"],
                 secret=mock_credentials["secret"],
                 base_url=mock_credentials["base_url"],
@@ -141,7 +141,7 @@ class TestClientParameterHandling:
         mock_manager.get_valid_token.return_value = "test_token"
         mock_token_manager.return_value = mock_manager
 
-        client = AsyncOpenAI(
+        client = EvolutionAsyncOpenAI(
             key_id=mock_credentials["key_id"],
             secret=mock_credentials["secret"],
             base_url=mock_credentials["base_url"],
@@ -474,6 +474,7 @@ class TestRequestInterceptionScenarios:
             "token3",
             "token4",
         ]
+        mock_manager.get_valid_token_async = AsyncMock(return_value="token3")
         mock_token_manager.return_value = mock_manager
 
         client = EvolutionAsyncOpenAI(
@@ -593,6 +594,9 @@ class TestErrorPropagation:
         """Test that async errors are propagated correctly"""
         mock_manager = MagicMock()
         mock_manager.get_valid_token.return_value = "test_token"
+        mock_manager.get_valid_token_async = AsyncMock(
+            return_value="test_token"
+        )
         mock_token_manager.return_value = mock_manager
 
         client = EvolutionAsyncOpenAI(

@@ -2,19 +2,22 @@
 Менеджер токенов для Cloud.ru API
 """
 
-import logging
 import os
-import threading
 import asyncio
+import logging
+import threading
 from typing import Any, Dict, Optional
 from datetime import datetime, timedelta
 
 import requests
+
 try:
     import httpx
-    HTTPX_AVAILABLE = True
+
+    _httpx_available = True
 except ImportError:
-    HTTPX_AVAILABLE = False
+    httpx = None  # type: ignore[assignment]
+    _httpx_available = False
 
 from evolution_openai.exceptions import (
     EvolutionAuthError,
@@ -172,7 +175,7 @@ class EvolutionTokenManager:
         payload = {"keyId": self.key_id, "secret": self.secret}
         headers = {"Content-Type": "application/json"}
 
-        if HTTPX_AVAILABLE:
+        if _httpx_available and httpx is not None:
             # Используем httpx для асинхронных запросов
             try:
                 async with httpx.AsyncClient(timeout=30.0) as client:
@@ -193,11 +196,13 @@ class EvolutionTokenManager:
                     ) from None
                 else:
                     raise EvolutionNetworkError(
-                        f"HTTP ошибка при получении токена: {e}", original_error=e
+                        f"HTTP ошибка при получении токена: {e}",
+                        original_error=e,
                     ) from None
             except httpx.RequestError as e:
                 raise EvolutionNetworkError(
-                    f"Сетевая ошибка при получении токена: {e}", original_error=e
+                    f"Сетевая ошибка при получении токена: {e}",
+                    original_error=e,
                 ) from None
             except Exception as e:
                 raise EvolutionTokenError(

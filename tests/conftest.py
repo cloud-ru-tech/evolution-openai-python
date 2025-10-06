@@ -51,8 +51,6 @@ def pytest_collection_modifyitems(items: list[pytest.Function]) -> None:
             if "integration" in item.keywords:
                 item.add_marker(skip_integration)
 
-    
-
 
 def pytest_configure(config: Config) -> None:
     """Register custom markers"""
@@ -61,7 +59,6 @@ def pytest_configure(config: Config) -> None:
     )
     config.addinivalue_line("markers", "unit: mark test as unit test")
     config.addinivalue_line("markers", "slow: mark test as slow running")
-    
 
     # Load environment variables from .env file if exists
     try:
@@ -104,8 +101,6 @@ def mock_credentials() -> Dict[str, str]:
         "base_url": "https://test.example.com/v1",
         "token_url": "https://iam.api.cloud.ru/api/v1/auth/token",
     }
-
-
 
 
 @pytest.fixture(scope="session")
@@ -158,6 +153,3 @@ async def async_client(
             yield client
     except Exception as e:
         pytest.skip(f"Failed to create async client: {e}")
-
-
-    

@@ -446,6 +446,9 @@ class TestAsyncHTTPClientPatching:
         """Test patched async request method successful execution"""
         mock_manager = MagicMock()
         mock_manager.get_valid_token.return_value = "test_token"
+        mock_manager.get_valid_token_async = AsyncMock(
+            return_value="test_token"
+        )
         mock_token_manager.return_value = mock_manager
 
         client = EvolutionAsyncOpenAI(
@@ -484,6 +487,12 @@ class TestAsyncHTTPClientPatching:
             "new_token",
             "new_token",
         ]
+        mock_manager.get_valid_token_async = AsyncMock(
+            side_effect=[
+                "test_token",
+                "new_token",
+            ]
+        )
         mock_token_manager.return_value = mock_manager
 
         client = EvolutionAsyncOpenAI(
@@ -526,6 +535,12 @@ class TestAsyncHTTPClientPatching:
             "new_token",
             "new_token",
         ]
+        mock_manager.get_valid_token_async = AsyncMock(
+            side_effect=[
+                "test_token",
+                "new_token",
+            ]
+        )
         mock_token_manager.return_value = mock_manager
 
         client = EvolutionAsyncOpenAI(
@@ -571,7 +586,7 @@ class TestContextManagers:
             mock_enter.return_value = MagicMock()
             mock_exit.return_value = None
 
-            client = OpenAI(
+            client = EvolutionOpenAI(
                 key_id=mock_credentials["key_id"],
                 secret=mock_credentials["secret"],
                 base_url=mock_credentials["base_url"],
@@ -619,7 +634,7 @@ class TestContextManagers:
             mock_enter.return_value = MagicMock()
             mock_exit.side_effect = Exception("Parent exit error")
 
-            client = OpenAI(
+            client = EvolutionOpenAI(
                 key_id=mock_credentials["key_id"],
                 secret=mock_credentials["secret"],
                 base_url=mock_credentials["base_url"],
@@ -644,7 +659,7 @@ class TestContextManagers:
             mock_aenter.return_value = AsyncMock()
             mock_aexit.return_value = AsyncMock()
 
-            client = AsyncOpenAI(
+            client = EvolutionAsyncOpenAI(
                 key_id=mock_credentials["key_id"],
                 secret=mock_credentials["secret"],
                 base_url=mock_credentials["base_url"],
@@ -673,7 +688,7 @@ class TestContextManagers:
             mock_aenter.return_value = AsyncMock()
             mock_aexit.side_effect = Exception("Parent async exit error")
 
-            client = AsyncOpenAI(
+            client = EvolutionAsyncOpenAI(
                 key_id=mock_credentials["key_id"],
                 secret=mock_credentials["secret"],
                 base_url=mock_credentials["base_url"],

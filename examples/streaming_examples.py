@@ -56,7 +56,9 @@ def basic_streaming_example():
         return
 
     try:
-        with EvolutionOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 
@@ -100,7 +102,9 @@ def streaming_with_metadata():
         return
 
     try:
-        with EvolutionOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL) as client:
+        with EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        ) as client:
             # Получаем доступную модель
             model_name = get_available_model(client)
 
@@ -211,7 +215,9 @@ def streaming_with_stop_sequence():
         return
 
     try:
-        client = EvolutionOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = get_available_model(client)
@@ -276,7 +282,9 @@ def multiple_streaming_conversations():
     ]
 
     try:
-        client = EvolutionOpenAI(key_id=KEY_ID, secret=SECRET, base_url=BASE_URL)
+        client = EvolutionOpenAI(
+            key_id=KEY_ID, secret=SECRET, base_url=BASE_URL
+        )
 
         # Получаем доступную модель
         model_name = get_available_model(client)

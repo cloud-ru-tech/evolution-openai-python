@@ -2,12 +2,12 @@
 Основные клиенты Evolution OpenAI
 """
 
-import logging
 import os
 import asyncio
+import logging
 import contextlib
-from datetime import datetime, timedelta
 from typing import Any, Dict, Type, Union, Optional
+from datetime import datetime, timedelta
 from typing_extensions import override
 
 from evolution_openai.token_manager import EvolutionTokenManager
@@ -220,9 +220,9 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
         # Синхронизируем api_key/авторизацию в нижележащем клиенте
         try:
             if hasattr(self._client, "api_key"):
-                setattr(self._client, "api_key", token)
+                self._client.api_key = token
             if hasattr(self._client, "_api_key"):
-                setattr(self._client, "_api_key", token)
+                self._client._api_key = token
             # Попытка обновить auth объект, если он содержит токен
             auth_obj = getattr(self._client, "auth", None)
             if auth_obj is not None:
@@ -235,7 +235,9 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
                     if hasattr(auth_obj, attr):
                         setattr(auth_obj, attr, token)
         except Exception as e:
-            logger.debug(f"Не удалось обновить api_key/_auth у HTTP клиента: {e}")
+            logger.debug(
+                f"Не удалось обновить api_key/_auth у HTTP клиента: {e}"
+            )
 
         if not headers_updated:
             logger.warning(
@@ -255,7 +257,9 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
                 return True
         # 2) Имя класса исключения
         name = error.__class__.__name__.lower()
-        if any(k in name for k in ("auth", "unauthor", "forbidden", "permission")):
+        if any(
+            k in name for k in ("auth", "unauthor", "forbidden", "permission")
+        ):
             return True
         # 3) Подстроки в сообщении
         error_str = str(error).lower()
@@ -324,7 +328,6 @@ class EvolutionOpenAI(_BaseOpenAI):  # type: ignore[reportUnknownBaseType,report
             "secret": self.secret,
             "base_url": self.base_url,
             "organization": self.organization,
-            
             "timeout": self.timeout,
             "max_retries": self.max_retries,
             "default_headers": self.default_headers,
@@ -421,7 +424,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         except RuntimeError:
             loop = None
         if loop is not None:
-            self._token_refresh_task = loop.create_task(self._auto_refresh_token_loop())  # type: ignore[reportAttributeAccessIssue]
+            self._token_refresh_task = loop.create_task(
+                self._auto_refresh_token_loop()
+            )  # type: ignore[reportAttributeAccessIssue]
             logger.debug("Фоновая задача автообновления токена запущена")
         else:
             self._token_refresh_task = None  # type: ignore[reportAttributeAccessIssue]
@@ -474,7 +479,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
                         "Ошибка авторизации, принудительно обновляем токен"
                     )
                     self.token_manager.invalidate_token()
-                    new_token = await self.token_manager.get_valid_token_async()
+                    new_token = (
+                        await self.token_manager.get_valid_token_async()
+                    )
                     self.api_key = new_token or ""  # type: ignore[reportUnknownMemberType,reportUnknownVariableType]
                     self._update_auth_headers(new_token or "")
                     return await original_request(*args, **kwargs)
@@ -483,7 +490,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
 
         # Устанавливаем патченый метод
         setattr(self._client, method_name, patched_request)  # type: ignore[reportUnknownMemberType,reportUnknownArgumentType]
-        logger.debug("Async HTTP клиент успешно пропатчен для автообновления токена")
+        logger.debug(
+            "Async HTTP клиент успешно пропатчен для автообновления токена"
+        )
 
     def _update_auth_headers(self, token: str) -> None:
         """Обновляет заголовки авторизации"""
@@ -512,9 +521,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
         # Синхронизируем api_key/авторизацию в нижележащем клиенте
         try:
             if hasattr(self._client, "api_key"):
-                setattr(self._client, "api_key", token)
+                self._client.api_key = token
             if hasattr(self._client, "_api_key"):
-                setattr(self._client, "_api_key", token)
+                self._client._api_key = token
             auth_obj = getattr(self._client, "auth", None)
             if auth_obj is not None:
                 for attr in ("api_key", "token", "_token"):
@@ -526,7 +535,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
                     if hasattr(auth_obj, attr):
                         setattr(auth_obj, attr, token)
         except Exception as e:
-            logger.debug(f"Не удалось обновить api_key/_auth у async HTTP клиента: {e}")
+            logger.debug(
+                f"Не удалось обновить api_key/_auth у async HTTP клиента: {e}"
+            )
 
         if not headers_updated:
             logger.warning(
@@ -544,7 +555,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
             if isinstance(resp_code, int) and resp_code in (401, 403):
                 return True
         name = error.__class__.__name__.lower()
-        if any(k in name for k in ("auth", "unauthor", "forbidden", "permission")):
+        if any(
+            k in name for k in ("auth", "unauthor", "forbidden", "permission")
+        ):
             return True
         error_str = str(error).lower()
         return any(
@@ -613,7 +626,6 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
             "secret": self.secret,
             "base_url": self.base_url,
             "organization": self.organization,
-            
             "timeout": self.timeout,
             "max_retries": self.max_retries,
             "default_headers": self.default_headers,
@@ -643,7 +655,9 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
                     continue
 
                 # Обновляем немного раньше буфера, чтобы избежать гонок
-                target_time = expires_at - timedelta(seconds=buffer_seconds + 5)
+                target_time = expires_at - timedelta(
+                    seconds=buffer_seconds + 5
+                )
                 sleep_seconds = (target_time - now).total_seconds()
                 if sleep_seconds < 1:
                     sleep_seconds = 1
@@ -652,7 +666,7 @@ class EvolutionAsyncOpenAI(_BaseAsyncOpenAI):  # type: ignore[reportUnknownBaseT
             return
 
     @override
-    async def close(self) -> None:  # type: ignore[reportUnknownMemberType]
+    async def close(self) -> None:  # type: ignore[misc]
         """Закрывает клиент и останавливает фоновую задачу автообновления."""
         task = getattr(self, "_token_refresh_task", None)
         if task is not None:

@@ -140,7 +140,7 @@ def main() -> bool:
         ("basic_usage.py", "Базовые примеры использования"),
         ("streaming_examples.py", "Примеры Streaming API"),
         ("token_management.py", "Управление токенами"),
-        ("async_examples.py", "Асинхронные примеры")
+        ("async_examples.py", "Асинхронные примеры"),
     ]
 
     # Статистика
